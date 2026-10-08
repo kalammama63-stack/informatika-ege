@@ -215,6 +215,11 @@ new MutationObserver(updateProgress).observe(document.body, { subtree: true, att
 document.querySelectorAll('.py').forEach(setupPy);
 document.querySelectorAll('.answer').forEach(setupAnswer);
 document.querySelectorAll('.steps').forEach(setupSteps);
+// Нумерация строк в коде: каждая строка — отдельный span (номер рисует CSS и не копируется)
+document.querySelectorAll('pre.num code').forEach((code) => {
+  const esc = (t) => t.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+  code.innerHTML = code.textContent.replace(/\n$/, '').split('\n').map((l) => `<span class="cl">${esc(l)}</span>`).join('\n');
+});
 document.querySelectorAll('pre.tpl').forEach(setupCopy);
 document.querySelectorAll('.map').forEach(setupMap);
 updateProgress();

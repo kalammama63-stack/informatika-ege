@@ -1,0 +1,900 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Задание 2 · Таблица истинности</title>
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E🐍%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+<div class="wrap">
+
+<div class="top"><a href="index.html">← Все задания</a><span class="where">Решено на странице: <b class="progress">0</b></span></div>
+
+<div class="kicker">Задание 2 · базовый уровень · 1 балл · около 3 минут</div>
+<h1>Задание 2. Таблица истинности</h1>
+<p class="lead">Дана логическая функция и кусочек её таблицы. Нужно понять, какая буква в каком столбце. Вручную это головоломка, а с шаблоном на Python — пять минут работы, даже если логику ты пока не понимаешь.</p>
+
+<div class="box why">
+  <b>Перед этим заданием</b> пройди <a href="python.html">Python за 2 урока</a>. Там объяснены все команды, из которых состоит шаблон: функция, перебор, <code>index</code>, <code>join</code>.
+</div>
+
+<h2>Как задание выглядит на ЕГЭ</h2>
+<div class="box">
+  <p><i>Логическая функция F задаётся выражением</i> <span class="expr">(x → y) ∧ ¬(y ≡ z) ∧ ¬w</span>.</p>
+  <p><i>Дан частично заполненный фрагмент таблицы истинности функции F, содержащий неповторяющиеся строки. Определите, какому столбцу таблицы соответствует каждая из переменных x, y, z, w.</i></p>
+  <div class="tbl"><table class="tt">
+<tr><th>?</th><th>?</th><th>?</th><th>?</th><th>F</th></tr>
+<tr><td>0</td><td></td><td></td><td>0</td><td>1</td></tr>
+<tr><td>1</td><td>0</td><td></td><td>0</td><td>1</td></tr>
+<tr><td></td><td>0</td><td>0</td><td>0</td><td>1</td></tr>
+</table></div>
+  <p style="margin:0"><i>В ответе напишите буквы x, y, z, w в том порядке, в котором идут соответствующие им столбцы.</i></p>
+</div>
+<p>Что тут важно:</p>
+<ul>
+  <li>Над столбцами стоят знаки вопроса — какая там буква, нам и нужно узнать.</li>
+  <li>Некоторые клетки <b>пустые</b> — там может быть и 0, и 1.</li>
+  <li>Строки <b>не повторяются</b> — это подсказка, она отсекает часть вариантов.</li>
+  <li>В столбце F бывают все единицы или все нули (на ЕГЭ 2026 года чаще встречались нули).</li>
+  <li>Ответ — четыре буквы подряд, например <code>yzxw</code>.</li>
+</ul>
+
+<h2>Шаг 1. Переводим функцию на Python</h2>
+<p>Это единственная часть, где нужно думать. Каждый знак меняем по таблице:</p>
+<div class="tbl"><table>
+  <tr><th>На ЕГЭ</th><th>Название</th><th>На Python</th><th>Почему так</th></tr>
+  <tr><td>¬x</td><td>НЕ (отрицание)</td><td><code>not x</code></td><td>то же слово по-английски</td></tr>
+  <tr><td>x ∧ y</td><td>И (конъюнкция)</td><td><code>x and y</code></td><td>то же слово по-английски</td></tr>
+  <tr><td>x ∨ y</td><td>ИЛИ (дизъюнкция)</td><td><code>x or y</code></td><td>то же слово по-английски</td></tr>
+  <tr><td>x → y</td><td>импликация, «если x, то y»</td><td><code>x &lt;= y</code></td><td>см. ниже</td></tr>
+  <tr><td>x ≡ y</td><td>эквивалентность, «x равно y»</td><td><code>x == y</code></td><td>правда, когда значения одинаковые</td></tr>
+</table></div>
+
+<h3>Почему импликация — это &lt;=</h3>
+<p>Импликация «если x, то y» ложна <b>только в одном случае</b>: x = 1, а y = 0 (обещали — и не сделали). Сравним с <code>x &lt;= y</code> («x не больше y»):</p>
+<div class="tbl"><table>
+  <tr><th>x</th><th>y</th><th>x → y</th><th>x &lt;= y</th></tr>
+  <tr><td>0</td><td>0</td><td>1</td><td>0 &lt;= 0 — правда (1)</td></tr>
+  <tr><td>0</td><td>1</td><td>1</td><td>0 &lt;= 1 — правда (1)</td></tr>
+  <tr><td>1</td><td>0</td><td><b>0</b></td><td>1 &lt;= 0 — <b>ложь (0)</b></td></tr>
+  <tr><td>1</td><td>1</td><td>1</td><td>1 &lt;= 1 — правда (1)</td></tr>
+</table></div>
+<p>Столбцы совпали во всех четырёх строках. Значит, <code>x &lt;= y</code> и есть импликация. Проверь сам:</p>
+<div class="py"><textarea class="code">for x in [0, 1]:
+    for y in [0, 1]:
+        print(x, y, x <= y)</textarea></div>
+
+<div class="box remember"><b>Два правила скобок.</b>
+  <ol style="margin:8px 0 0">
+    <li><b>Сохраняй все скобки из условия.</b> Если в условии <span class="expr">¬(y ≡ z)</span>, пиши <code>not (y == z)</code>, а не <code>not y == z</code>.</li>
+    <li><b>Отрицание рядом с == и &lt;= бери в скобки.</b> <span class="expr">x ≡ ¬y</span> — это <code>x == (not y)</code>. Без скобок Python выдаст ошибку.</li>
+  </ol>
+</div>
+<p>Пример: <span class="expr">(x → y) ∧ ¬(y ≡ z) ∧ ¬w</span> → <code>(x &lt;= y) and not (y == z) and not w</code>.</p>
+
+<!-- ================= ШАБЛОН ================= -->
+<h2>Шаг 2. Шаблон: разбор каждой строки</h2>
+<p>Это программа для задачи из начала страницы. Она перебирает все варианты для пустых клеток и все расстановки букв по столбцам и печатает ту расстановку, которая подходит. Сначала прочитай объяснение каждой строки, потом нажми «Запустить» внизу.</p>
+<pre class="tpl num"><code>from itertools import product, permutations
+
+def F(x, y, z, w):
+    return (x &lt;= y) and not (y == z) and not w
+
+answers = set()
+for a, b, c, d in product([0, 1], repeat=4):
+    table = [(0, a, b, 0, 1),
+             (1, 0, c, 0, 1),
+             (d, 0, 0, 0, 1)]
+    if len(set(table)) &lt; len(table):
+        continue
+    for p in permutations(&#x27;xyzw&#x27;):
+        ok = True
+        for row in table:
+            x = row[p.index(&#x27;x&#x27;)]
+            y = row[p.index(&#x27;y&#x27;)]
+            z = row[p.index(&#x27;z&#x27;)]
+            w = row[p.index(&#x27;w&#x27;)]
+            if F(x, y, z, w) != row[4]:
+                ok = False
+        if ok:
+            answers.add(&#x27;&#x27;.join(p))
+print(answers)</code></pre>
+
+<ul class="lines">
+  <li><span class="ln">1</span><code>from itertools import product, permutations</code>
+    <p><span class="w w1">Что делает:</span> подключает две готовые команды: <code>product</code> перебирает все сочетания нулей и единиц, <code>permutations</code> — все расстановки букв.</p>
+    <p><span class="w w2">Почему так:</span> писать перебор самим долго, а эти команды уже есть в Python и работают на экзамене.</p>
+    <p><span class="w w3">Что менять:</span> ничего. Эта строка всегда одинаковая.</p></li>
+
+  <li><span class="ln">3</span><code>def F(x, y, z, w):</code>
+    <p><span class="w w1">Что делает:</span> создаёт функцию <code>F</code> — «машинку», в которую кладут четыре числа, а она отвечает 1 или 0.</p>
+    <p><span class="w w2">Почему так:</span> формулу из условия пишем один раз, а проверяем ею много строк таблицы.</p>
+    <p><span class="w w3">Что менять:</span> если в задаче три переменные, пиши <code>def F(x, y, z):</code>.</p></li>
+
+  <li><span class="ln">4</span><code>    return (x &lt;= y) and not (y == z) and not w</code>
+    <p><span class="w w1">Что делает:</span> вычисляет функцию из условия и возвращает результат.</p>
+    <p><span class="w w2">Почему так:</span> это перевод из шага 1: → стало <code>&lt;=</code>, ≡ стало <code>==</code>, ¬ стало <code>not</code>, ∧ стало <code>and</code>. Отступ в 4 пробела — строка внутри функции.</p>
+    <p><span class="w w3">Что менять:</span> <b>главная строка, которую меняешь в каждой задаче.</b> Сюда пишешь свою функцию по таблице замены.</p></li>
+
+  <li><span class="ln">6</span><code>answers = set()</code>
+    <p><span class="w w1">Что делает:</span> заводит пустое множество — «мешок» для найденных ответов.</p>
+    <p><span class="w w2">Почему так:</span> один и тот же ответ может найтись несколько раз (при разных числах в пустых клетках). Множество хранит его один раз, без повторов.</p>
+    <p><span class="w w3">Что менять:</span> ничего.</p></li>
+
+  <li><span class="ln">7</span><code>for a, b, c, d in product([0, 1], repeat=4):</code>
+    <p><span class="w w1">Что делает:</span> перебирает все варианты того, что может стоять в пустых клетках. Пустых клеток четыре, у каждой два варианта (0 или 1), всего 2 × 2 × 2 × 2 = 16 вариантов.</p>
+    <p><span class="w w2">Почему так:</span> мы не знаем, что в пустых клетках, — поэтому пробуем всё. Компьютеру это доля секунды.</p>
+    <p><span class="w w3">Что менять:</span> сколько пустых клеток в твоей таблице — столько букв (<code>a, b, c…</code>) и такое же число в <code>repeat</code>. Пустых три — <code>for a, b, c in product([0, 1], repeat=3):</code>.</p></li>
+
+  <li><span class="ln">8–10</span><code>    table = [(0, a, b, 0, 1), …]</code>
+    <p><span class="w w1">Что делает:</span> переписывает таблицу из условия. Каждая строка таблицы — в круглых скобках. Пустые клетки заменены буквами <code>a, b, c, d</code>. <b>Последнее число в строке — значение F.</b></p>
+    <p><span class="w w2">Почему так:</span> вместо букв программа подставляет варианты из строки 7 и так «заполняет» пустые клетки.</p>
+    <p><span class="w w3">Что менять:</span> <b>вторая главная часть.</b> Переписываешь свою таблицу строку за строкой, слева направо. Пустую клетку заменяешь следующей буквой по порядку. В конце каждой строки — значение F (1 или 0).</p></li>
+
+  <li><span class="ln">11–12</span><code>    if len(set(table)) &lt; len(table): continue</code>
+    <p><span class="w w1">Что делает:</span> если после заполнения пустых клеток две строки получились одинаковыми — пропускаем этот вариант (<code>continue</code>).</p>
+    <p><span class="w w2">Почему так:</span> в условии сказано «неповторяющиеся строки». <code>set</code> убирает повторы: если строк стало меньше, значит, были одинаковые, а так быть не может.</p>
+    <p><span class="w w3">Что менять:</span> ничего.</p></li>
+
+  <li><span class="ln">13</span><code>    for p in permutations('xyzw'):</code>
+    <p><span class="w w1">Что делает:</span> перебирает все 24 способа расставить буквы по столбцам. Например, <code>p = ('y', 'z', 'x', 'w')</code> значит: в первом столбце y, во втором z, в третьем x, в четвёртом w.</p>
+    <p><span class="w w2">Почему так:</span> это ровно то, что спрашивают в задаче, — поэтому просто проверяем все варианты.</p>
+    <p><span class="w w3">Что менять:</span> если переменные другие, перечисли их: <code>permutations('xyz')</code>.</p></li>
+
+  <li><span class="ln">14</span><code>        ok = True</code>
+    <p><span class="w w1">Что делает:</span> «пока считаем, что эта расстановка подходит».</p>
+    <p><span class="w w2">Почему так:</span> дальше проверяем строки; если хоть одна не сойдётся, поменяем на <code>False</code>.</p>
+    <p><span class="w w3">Что менять:</span> ничего.</p></li>
+
+  <li><span class="ln">15</span><code>        for row in table:</code>
+    <p><span class="w w1">Что делает:</span> берёт по очереди каждую строку таблицы.</p>
+    <p><span class="w w3">Что менять:</span> ничего.</p></li>
+
+  <li><span class="ln">16–19</span><code>            x = row[p.index('x')]</code>
+    <p><span class="w w1">Что делает:</span> <code>p.index('x')</code> — в каком столбце сейчас стоит x (счёт с нуля), <code>row[...]</code> — число из этого столбца. Так же для y, z, w.</p>
+    <p><span class="w w2">Почему так:</span> функции <code>F</code> нужны значения по именам (x, y, z, w), а в таблице они лежат по столбцам. Эти строки «переводят» столбцы в имена.</p>
+    <p><span class="w w3">Что менять:</span> по одной такой строке на каждую переменную. Три переменные — три строки.</p></li>
+
+  <li><span class="ln">20–21</span><code>            if F(x, y, z, w) != row[4]: ok = False</code>
+    <p><span class="w w1">Что делает:</span> считает функцию для этой строки и сравнивает с числом в столбце F (<code>row[4]</code> — пятый элемент, счёт с нуля). Не совпало — расстановка не подходит.</p>
+    <p><span class="w w2">Почему так:</span> правильная расстановка должна давать верное F <b>в каждой</b> строке.</p>
+    <p><span class="w w3">Что менять:</span> при трёх переменных столбец F — четвёртый: <code>row[3]</code>, и <code>F(x, y, z)</code>.</p></li>
+
+  <li><span class="ln">22–23</span><code>        if ok: answers.add(''.join(p))</code>
+    <p><span class="w w1">Что делает:</span> если все строки сошлись, склеивает буквы в слово (например, <code>yzxw</code>) и кладёт в мешок ответов.</p>
+    <p><span class="w w3">Что менять:</span> ничего.</p></li>
+
+  <li><span class="ln">24</span><code>print(answers)</code>
+    <p><span class="w w1">Что делает:</span> печатает найденные ответы. Должно получиться ровно одно слово, например <code>{'yzxw'}</code>. Его и пишешь в бланк.</p>
+    <p><span class="w w2">Если ответов несколько или ни одного:</span> скорее всего, ошибка при переписывании функции или таблицы. Проверь скобки и каждую строку.</p>
+    <p><span class="w w3">Что менять:</span> ничего. Строка без отступа — выполняется один раз, после всех переборов.</p></li>
+</ul>
+
+<p><b>Запусти</b> — программа напечатает ответ:</p>
+<div class="py"><textarea class="code">from itertools import product, permutations
+
+def F(x, y, z, w):
+    return (x &lt;= y) and not (y == z) and not w
+
+answers = set()
+for a, b, c, d in product([0, 1], repeat=4):
+    table = [(0, a, b, 0, 1),
+             (1, 0, c, 0, 1),
+             (d, 0, 0, 0, 1)]
+    if len(set(table)) &lt; len(table):
+        continue
+    for p in permutations(&#x27;xyzw&#x27;):
+        ok = True
+        for row in table:
+            x = row[p.index(&#x27;x&#x27;)]
+            y = row[p.index(&#x27;y&#x27;)]
+            z = row[p.index(&#x27;z&#x27;)]
+            w = row[p.index(&#x27;w&#x27;)]
+            if F(x, y, z, w) != row[4]:
+                ok = False
+        if ok:
+            answers.add(&#x27;&#x27;.join(p))
+print(answers)</textarea></div>
+
+<div class="box remember"><b>Итого: в шаблоне меняешь только три вещи.</b>
+  <ol style="margin:8px 0 0">
+    <li>Строку 4 — функцию из условия.</li>
+    <li>Строки 8–10 — таблицу из условия (пустые клетки — буквами, в конце строки — F).</li>
+    <li>Строку 7 — сколько пустых клеток.</li>
+  </ol>
+</div>
+
+<!-- ================= УРОВЕНЬ 1 ================= -->
+<h2>Уровень 1. Разминка: считаем логику на Python</h2>
+<p>Сначала научимся просто переводить и вычислять. Для подсчёта строк пригодится короткий шаблон «печать таблицы»:</p>
+<pre class="tpl num"><code>from itertools import product
+print('x y z w')
+for x, y, z, w in product([0, 1], repeat=4):
+    F = ((x and not y) &lt;= z) == (w or x)
+    if F == 1:
+        print(x, y, z, w)</code></pre>
+<ul class="lines">
+  <li><span class="ln">2</span><code>print('x y z w')</code>
+    <p><span class="w w1">Что делает:</span> печатает заголовок, чтобы было видно, где какая переменная.</p></li>
+  <li><span class="ln">3</span><code>for x, y, z, w in product([0, 1], repeat=4):</code>
+    <p><span class="w w1">Что делает:</span> перебирает все 16 строк полной таблицы истинности: от 0000 до 1111.</p>
+    <p><span class="w w3">Что менять:</span> для трёх переменных — <code>for x, y, z in product([0, 1], repeat=3):</code>.</p></li>
+  <li><span class="ln">4</span><code>    F = ((x and not y) &lt;= z) == (w or x)</code>
+    <p><span class="w w1">Что делает:</span> вычисляет функцию для текущей строки.</p>
+    <p><span class="w w3">Что менять:</span> сюда — функцию из задачи.</p></li>
+  <li><span class="ln">5–6</span><code>    if F == 1: print(x, y, z, w)</code>
+    <p><span class="w w1">Что делает:</span> печатает только строки, где функция равна 1.</p>
+    <p><span class="w w3">Что менять:</span> нужны строки с нулём — пиши <code>if F == 0:</code>.</p></li>
+</ul>
+<div class="py"><textarea class="code"># Окошко для задач уровня 1
+from itertools import product
+print('x y z w')
+for x, y, z, w in product([0, 1], repeat=4):
+    F = ((x and not y) <= z) == (w or x)
+    if F == 1:
+        print(x, y, z, w)</textarea></div>
+<div class="answer" data-answer="0"><b>Задача 1.1.</b> Чему равно <span class="expr">(x → y) ∧ ¬z</span> при x = 1, y = 0, z = 0? Ответ: 0 или 1.
+<details class="hint"><summary>Решение</summary><div>На Python: <code>(x &lt;= y) and not z</code>. Подставь значения или запусти в окошке: <code>x = 1; y = 0; z = 0; print(int((x &lt;= y) and not z))</code>. Ответ: <b>0</b>.</div></details>
+</div>
+<div class="answer" data-answer="1"><b>Задача 1.2.</b> Чему равно <span class="expr">(x ∨ y) ≡ ¬z</span> при x = 0, y = 0, z = 1? Ответ: 0 или 1.
+<details class="hint"><summary>Решение</summary><div>На Python: <code>(x or y) == (not z)</code>. Подставь значения или запусти в окошке: <code>x = 0; y = 0; z = 1; print(int((x or y) == (not z)))</code>. Ответ: <b>1</b>.</div></details>
+</div>
+<div class="answer" data-answer="0"><b>Задача 1.3.</b> Чему равно <span class="expr">¬(x ∧ y) → (z ≡ w)</span> при x = 1, y = 0, z = 1, w = 0? Ответ: 0 или 1.
+<details class="hint"><summary>Решение</summary><div>На Python: <code>(not (x and y)) &lt;= (z == w)</code>. Подставь значения или запусти в окошке: <code>x = 1; y = 0; z = 1; w = 0; print(int((not (x and y)) &lt;= (z == w)))</code>. Ответ: <b>0</b>.</div></details>
+</div>
+<div class="answer" data-answer="3"><b>Задача 1.4.</b> В скольких строках полной таблицы истинности функции <span class="expr">(x → y) ∧ (y ≡ ¬z)</span> значение F равно 1?
+<details class="hint"><summary>Решение</summary><div>В шаблоне печати поставь <code>F = (x &lt;= y) and (y == (not z))</code> и условие <code>if F == 1</code>, посчитай напечатанные строки. Ответ: <b>3</b>.</div></details>
+</div>
+<div class="answer" data-answer="10"><b>Задача 1.5.</b> В скольких строках полной таблицы истинности функции <span class="expr">((x ∧ ¬y) → z) ≡ (w ∨ x)</span> значение F равно 1?
+<details class="hint"><summary>Решение</summary><div>В шаблоне печати поставь <code>F = ((x and not y) &lt;= z) == (w or x)</code> и условие <code>if F == 1</code>, посчитай напечатанные строки. Ответ: <b>10</b>.</div></details>
+</div>
+
+<!-- ================= УРОВЕНЬ 2 ================= -->
+<h2>Уровень 2. Три переменные, все клетки заполнены</h2>
+<p>Самый простой вид задачи: пустых клеток нет. Значит, строку с <code>product</code> из шаблона убираем, таблицу пишем как есть.</p>
+<h3>Разбор</h3>
+<p>Функция <span class="expr">(x → y) ∧ (z ∨ ¬y)</span>. Какому столбцу соответствует каждая из переменных x, y, z?</p>
+<div class="tbl"><table class="tt">
+<tr><th>?</th><th>?</th><th>?</th><th>F</th></tr>
+<tr><td>0</td><td>1</td><td>0</td><td>1</td></tr>
+<tr><td>1</td><td>1</td><td>0</td><td>1</td></tr>
+<tr><td>0</td><td>0</td><td>0</td><td>1</td></tr>
+</table></div>
+<div class="steps"><ol>
+  <li><b>Переводим функцию:</b> → становится <code>&lt;=</code>, ∨ — <code>or</code>, ¬ — <code>not</code>, ∧ — <code>and</code>. Получаем <code>(x &lt;= y) and (z or not y)</code>.</li>
+  <li><b>Переписываем таблицу.</b> Пустых клеток нет, поэтому буквы a, b, c не нужны и цикл с <code>product</code> тоже. В конце каждой строки — значение F, то есть 1.</li>
+  <li><b>Три переменные</b>, поэтому <code>def F(x, y, z)</code>, <code>permutations('xyz')</code>, три строки с <code>index</code> и <code>row[3]</code> — столбец F теперь четвёртый.</li>
+  <li><b>Получилась программа</b> (запусти её):<div class="py"><textarea class="code">from itertools import permutations
+
+def F(x, y, z):
+    return (x &lt;= y) and (z or not y)
+
+answers = set()
+table = [(0, 1, 0, 1),
+         (1, 1, 0, 1),
+         (0, 0, 0, 1)]
+for p in permutations(&#x27;xyz&#x27;):
+    ok = True
+    for row in table:
+        x = row[p.index(&#x27;x&#x27;)]
+        y = row[p.index(&#x27;y&#x27;)]
+        z = row[p.index(&#x27;z&#x27;)]
+        if F(x, y, z) != row[3]:
+            ok = False
+    if ok:
+        answers.add(&#x27;&#x27;.join(p))
+print(answers)</textarea></div></li>
+  <li><b>Ответ:</b> <code>yzx</code>. <b>Проверка вручную:</b> первая строка таблицы — это y = 0, z = 1, x = 0. Подставляем: (0 → 0) = 1, (1 ∨ ¬0) = 1, итого F = 1. Сходится.</li>
+</ol></div>
+<h3>Реши сам</h3>
+<div class="problem">
+<p><b>Задача 2.1.</b> Логическая функция F задаётся выражением <span class="expr">(x ∨ y) → (z ∧ ¬x)</span>.
+Дан фрагмент таблицы истинности (строки разные). Какому столбцу соответствует каждая из переменных x, y, z? Запишите буквы по порядку столбцов.</p>
+<div class="tbl"><table class="tt">
+<tr><th>?</th><th>?</th><th>?</th><th>F</th></tr>
+<tr><td>0</td><td>0</td><td>0</td><td>1</td></tr>
+<tr><td>1</td><td>1</td><td>0</td><td>1</td></tr>
+<tr><td>1</td><td>0</td><td>0</td><td>1</td></tr>
+</table></div>
+<div class="answer" data-answer="zyx"><b>Ответ:</b>
+<details class="hint"><summary>Подсказка</summary><div>Функция на Python: <code>(x or y) &lt;= (z and not x)</code></div></details>
+<details class="hint"><summary>Решение: шаблон, заполненный под эту задачу</summary><div>
+<p>Изменены только строки с функцией и строки таблицы. Нажми «Запустить» — программа напечатает ответ.</p>
+<div class="py"><textarea class="code">from itertools import permutations
+
+def F(x, y, z):
+    return (x or y) &lt;= (z and not x)
+
+answers = set()
+table = [(0, 0, 0, 1),
+         (1, 1, 0, 1),
+         (1, 0, 0, 1)]
+for p in permutations(&#x27;xyz&#x27;):
+    ok = True
+    for row in table:
+        x = row[p.index(&#x27;x&#x27;)]
+        y = row[p.index(&#x27;y&#x27;)]
+        z = row[p.index(&#x27;z&#x27;)]
+        if F(x, y, z) != row[3]:
+            ok = False
+    if ok:
+        answers.add(&#x27;&#x27;.join(p))
+print(answers)</textarea></div>
+<p>Ответ: <b>zyx</b>.</p></div></details>
+</div>
+</div>
+<div class="problem">
+<p><b>Задача 2.2.</b> Логическая функция F задаётся выражением <span class="expr">¬(x ≡ z) ∧ (y ∨ x)</span>.
+Дан фрагмент таблицы истинности (строки разные). Какому столбцу соответствует каждая из переменных x, y, z? Запишите буквы по порядку столбцов.</p>
+<div class="tbl"><table class="tt">
+<tr><th>?</th><th>?</th><th>?</th><th>F</th></tr>
+<tr><td>0</td><td>1</td><td>0</td><td>1</td></tr>
+<tr><td>1</td><td>0</td><td>1</td><td>1</td></tr>
+<tr><td>0</td><td>1</td><td>1</td><td>1</td></tr>
+</table></div>
+<div class="answer" data-answer="zxy"><b>Ответ:</b>
+<details class="hint"><summary>Подсказка</summary><div>Функция на Python: <code>not (x == z) and (y or x)</code></div></details>
+<details class="hint"><summary>Решение: шаблон, заполненный под эту задачу</summary><div>
+<p>Изменены только строки с функцией и строки таблицы. Нажми «Запустить» — программа напечатает ответ.</p>
+<div class="py"><textarea class="code">from itertools import permutations
+
+def F(x, y, z):
+    return not (x == z) and (y or x)
+
+answers = set()
+table = [(0, 1, 0, 1),
+         (1, 0, 1, 1),
+         (0, 1, 1, 1)]
+for p in permutations(&#x27;xyz&#x27;):
+    ok = True
+    for row in table:
+        x = row[p.index(&#x27;x&#x27;)]
+        y = row[p.index(&#x27;y&#x27;)]
+        z = row[p.index(&#x27;z&#x27;)]
+        if F(x, y, z) != row[3]:
+            ok = False
+    if ok:
+        answers.add(&#x27;&#x27;.join(p))
+print(answers)</textarea></div>
+<p>Ответ: <b>zxy</b>.</p></div></details>
+</div>
+</div>
+<div class="problem">
+<p><b>Задача 2.3.</b> Логическая функция F задаётся выражением <span class="expr">(x ∧ ¬y) ∨ (z → x)</span>.
+Дан фрагмент таблицы истинности (строки разные). Какому столбцу соответствует каждая из переменных x, y, z? Запишите буквы по порядку столбцов.</p>
+<div class="tbl"><table class="tt">
+<tr><th>?</th><th>?</th><th>?</th><th>F</th></tr>
+<tr><td>1</td><td>0</td><td>1</td><td>1</td></tr>
+<tr><td>1</td><td>1</td><td>0</td><td>1</td></tr>
+<tr><td>0</td><td>1</td><td>0</td><td>1</td></tr>
+</table></div>
+<div class="answer" data-answer="xyz"><b>Ответ:</b>
+<details class="hint"><summary>Подсказка</summary><div>Функция на Python: <code>(x and not y) or (z &lt;= x)</code></div></details>
+<details class="hint"><summary>Решение: шаблон, заполненный под эту задачу</summary><div>
+<p>Изменены только строки с функцией и строки таблицы. Нажми «Запустить» — программа напечатает ответ.</p>
+<div class="py"><textarea class="code">from itertools import permutations
+
+def F(x, y, z):
+    return (x and not y) or (z &lt;= x)
+
+answers = set()
+table = [(1, 0, 1, 1),
+         (1, 1, 0, 1),
+         (0, 1, 0, 1)]
+for p in permutations(&#x27;xyz&#x27;):
+    ok = True
+    for row in table:
+        x = row[p.index(&#x27;x&#x27;)]
+        y = row[p.index(&#x27;y&#x27;)]
+        z = row[p.index(&#x27;z&#x27;)]
+        if F(x, y, z) != row[3]:
+            ok = False
+    if ok:
+        answers.add(&#x27;&#x27;.join(p))
+print(answers)</textarea></div>
+<p>Ответ: <b>xyz</b>.</p></div></details>
+</div>
+</div>
+
+<!-- ================= УРОВЕНЬ 3 ================= -->
+<h2>Уровень 3. Пустые клетки, F = 1 — главный формат ЕГЭ</h2>
+<p>Это задача из начала страницы, и шаблон для неё разобран выше построчно. Повторим порядок действий.</p>
+<h3>Разбор</h3>
+<p>Функция <span class="expr">(x → y) ∧ ¬(y ≡ z) ∧ ¬w</span>.</p>
+<div class="tbl"><table class="tt">
+<tr><th>?</th><th>?</th><th>?</th><th>?</th><th>F</th></tr>
+<tr><td>0</td><td></td><td></td><td>0</td><td>1</td></tr>
+<tr><td>1</td><td>0</td><td></td><td>0</td><td>1</td></tr>
+<tr><td></td><td>0</td><td>0</td><td>0</td><td>1</td></tr>
+</table></div>
+<div class="steps"><ol>
+  <li><b>Переводим функцию:</b> <code>(x &lt;= y) and not (y == z) and not w</code>. Скобки у <code>not (y == z)</code> сохраняем — они были в условии.</li>
+  <li><b>Считаем пустые клетки:</b> их 4. Значит, <code>for a, b, c, d in product([0, 1], repeat=4):</code>.</li>
+  <li><b>Переписываем таблицу</b> слева направо, пустые клетки — буквами по порядку:
+    <pre><code>table = [(0, a, b, 0, 1),
+         (1, 0, c, 0, 1),
+         (d, 0, 0, 0, 1)]</code></pre></li>
+  <li><b>Запускаем</b> шаблон (он выше на странице) — получаем <code>{'yzxw'}</code>.</li>
+  <li><b>Проверка вручную.</b> Расставим буквы: 1-й столбец — y, 2-й — z, 3-й — x, 4-й — w. Первая строка: y = 0, w = 0, а x и z неизвестны. Функция требует, чтобы y ≠ z, значит z = 1, и чтобы x → y, значит x = 0. Строка x=0, y=0, z=1, w=0 — подставляем: (0→0)=1, ¬(0≡1)=1, ¬0=1, F = 1. Сходится.</li>
+</ol></div>
+<h3>Реши сам</h3>
+<div class="py"><textarea class="code"># Окошко для задач уровня 3: скопируй шаблон и поменяй строки 4, 7 и 8–10
+</textarea></div>
+<div class="problem">
+<p><b>Задача 3.1.</b> Логическая функция F задаётся выражением <span class="expr">(¬y ∨ x) ∧ ¬z ∧ w</span>.
+Дан фрагмент таблицы истинности (строки разные). Какому столбцу соответствует каждая из переменных x, y, z, w? Запишите буквы по порядку столбцов.</p>
+<div class="tbl"><table class="tt">
+<tr><th>?</th><th>?</th><th>?</th><th>?</th><th>F</th></tr>
+<tr><td></td><td>1</td><td>0</td><td>0</td><td>1</td></tr>
+<tr><td>1</td><td>1</td><td></td><td>1</td><td>1</td></tr>
+<tr><td></td><td>1</td><td></td><td>0</td><td>1</td></tr>
+</table></div>
+<div class="answer" data-answer="xwzy"><b>Ответ:</b>
+<details class="hint"><summary>Подсказка</summary><div>Функция на Python: <code>(not y or x) and not z and w</code></div></details>
+<details class="hint"><summary>Решение: шаблон, заполненный под эту задачу</summary><div>
+<p>Изменены только строки с функцией и строки таблицы. Нажми «Запустить» — программа напечатает ответ.</p>
+<div class="py"><textarea class="code">from itertools import product, permutations
+
+def F(x, y, z, w):
+    return (not y or x) and not z and w
+
+answers = set()
+for a, b, c, d in product([0, 1], repeat=4):
+    table = [(a, 1, 0, 0, 1),
+             (1, 1, b, 1, 1),
+             (c, 1, d, 0, 1)]
+    if len(set(table)) &lt; len(table):
+        continue
+    for p in permutations(&#x27;xyzw&#x27;):
+        ok = True
+        for row in table:
+            x = row[p.index(&#x27;x&#x27;)]
+            y = row[p.index(&#x27;y&#x27;)]
+            z = row[p.index(&#x27;z&#x27;)]
+            w = row[p.index(&#x27;w&#x27;)]
+            if F(x, y, z, w) != row[4]:
+                ok = False
+        if ok:
+            answers.add(&#x27;&#x27;.join(p))
+print(answers)</textarea></div>
+<p>Ответ: <b>xwzy</b>.</p></div></details>
+</div>
+</div>
+<div class="problem">
+<p><b>Задача 3.2.</b> Логическая функция F задаётся выражением <span class="expr">(y → z) ∧ ¬x ∧ w</span>.
+Дан фрагмент таблицы истинности (строки разные). Какому столбцу соответствует каждая из переменных x, y, z, w? Запишите буквы по порядку столбцов.</p>
+<div class="tbl"><table class="tt">
+<tr><th>?</th><th>?</th><th>?</th><th>?</th><th>F</th></tr>
+<tr><td>1</td><td>1</td><td>0</td><td></td><td>1</td></tr>
+<tr><td>0</td><td>1</td><td></td><td>0</td><td>1</td></tr>
+<tr><td>0</td><td></td><td></td><td>1</td><td>1</td></tr>
+</table></div>
+<div class="answer" data-answer="ywxz"><b>Ответ:</b>
+<details class="hint"><summary>Подсказка</summary><div>Функция на Python: <code>(y &lt;= z) and not x and w</code></div></details>
+<details class="hint"><summary>Решение: шаблон, заполненный под эту задачу</summary><div>
+<p>Изменены только строки с функцией и строки таблицы. Нажми «Запустить» — программа напечатает ответ.</p>
+<div class="py"><textarea class="code">from itertools import product, permutations
+
+def F(x, y, z, w):
+    return (y &lt;= z) and not x and w
+
+answers = set()
+for a, b, c, d in product([0, 1], repeat=4):
+    table = [(1, 1, 0, a, 1),
+             (0, 1, b, 0, 1),
+             (0, c, d, 1, 1)]
+    if len(set(table)) &lt; len(table):
+        continue
+    for p in permutations(&#x27;xyzw&#x27;):
+        ok = True
+        for row in table:
+            x = row[p.index(&#x27;x&#x27;)]
+            y = row[p.index(&#x27;y&#x27;)]
+            z = row[p.index(&#x27;z&#x27;)]
+            w = row[p.index(&#x27;w&#x27;)]
+            if F(x, y, z, w) != row[4]:
+                ok = False
+        if ok:
+            answers.add(&#x27;&#x27;.join(p))
+print(answers)</textarea></div>
+<p>Ответ: <b>ywxz</b>.</p></div></details>
+</div>
+</div>
+<div class="problem">
+<p><b>Задача 3.3.</b> Логическая функция F задаётся выражением <span class="expr">(w ∨ z) ∧ ¬(x ≡ (y → ¬w))</span>.
+Дан фрагмент таблицы истинности (строки разные). Какому столбцу соответствует каждая из переменных x, y, z, w? Запишите буквы по порядку столбцов.</p>
+<div class="tbl"><table class="tt">
+<tr><th>?</th><th>?</th><th>?</th><th>?</th><th>F</th></tr>
+<tr><td>0</td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
+<tr><td></td><td>0</td><td>1</td><td></td><td>1</td></tr>
+<tr><td>0</td><td>1</td><td></td><td>0</td><td>1</td></tr>
+</table></div>
+<div class="answer" data-answer="zwyx"><b>Ответ:</b>
+<details class="hint"><summary>Подсказка</summary><div>Функция на Python: <code>(w or z) and not (x == (y &lt;= (not w)))</code></div></details>
+<details class="hint"><summary>Решение: шаблон, заполненный под эту задачу</summary><div>
+<p>Изменены только строки с функцией и строки таблицы. Нажми «Запустить» — программа напечатает ответ.</p>
+<div class="py"><textarea class="code">from itertools import product, permutations
+
+def F(x, y, z, w):
+    return (w or z) and not (x == (y &lt;= (not w)))
+
+answers = set()
+for a, b, c in product([0, 1], repeat=3):
+    table = [(0, 1, 1, 1, 1),
+             (a, 0, 1, b, 1),
+             (0, 1, c, 0, 1)]
+    if len(set(table)) &lt; len(table):
+        continue
+    for p in permutations(&#x27;xyzw&#x27;):
+        ok = True
+        for row in table:
+            x = row[p.index(&#x27;x&#x27;)]
+            y = row[p.index(&#x27;y&#x27;)]
+            z = row[p.index(&#x27;z&#x27;)]
+            w = row[p.index(&#x27;w&#x27;)]
+            if F(x, y, z, w) != row[4]:
+                ok = False
+        if ok:
+            answers.add(&#x27;&#x27;.join(p))
+print(answers)</textarea></div>
+<p>Ответ: <b>zwyx</b>.</p></div></details>
+</div>
+</div>
+<div class="problem">
+<p><b>Задача 3.4.</b> Логическая функция F задаётся выражением <span class="expr">(¬(x ∨ z) ∨ (w → ¬y)) ∧ (z ≡ ¬y) ∧ w</span>.
+Дан фрагмент таблицы истинности (строки разные). Какому столбцу соответствует каждая из переменных x, y, z, w? Запишите буквы по порядку столбцов.</p>
+<div class="tbl"><table class="tt">
+<tr><th>?</th><th>?</th><th>?</th><th>?</th><th>F</th></tr>
+<tr><td></td><td>1</td><td></td><td>1</td><td>1</td></tr>
+<tr><td>1</td><td></td><td>1</td><td>0</td><td>1</td></tr>
+<tr><td>0</td><td>0</td><td></td><td>1</td><td>1</td></tr>
+</table></div>
+<div class="answer" data-answer="yxwz"><b>Ответ:</b>
+<details class="hint"><summary>Подсказка</summary><div>Функция на Python: <code>(not (x or z) or (w &lt;= (not y))) and (z == (not y)) and w</code></div></details>
+<details class="hint"><summary>Решение: шаблон, заполненный под эту задачу</summary><div>
+<p>Изменены только строки с функцией и строки таблицы. Нажми «Запустить» — программа напечатает ответ.</p>
+<div class="py"><textarea class="code">from itertools import product, permutations
+
+def F(x, y, z, w):
+    return (not (x or z) or (w &lt;= (not y))) and (z == (not y)) and w
+
+answers = set()
+for a, b, c, d in product([0, 1], repeat=4):
+    table = [(a, 1, b, 1, 1),
+             (1, c, 1, 0, 1),
+             (0, 0, d, 1, 1)]
+    if len(set(table)) &lt; len(table):
+        continue
+    for p in permutations(&#x27;xyzw&#x27;):
+        ok = True
+        for row in table:
+            x = row[p.index(&#x27;x&#x27;)]
+            y = row[p.index(&#x27;y&#x27;)]
+            z = row[p.index(&#x27;z&#x27;)]
+            w = row[p.index(&#x27;w&#x27;)]
+            if F(x, y, z, w) != row[4]:
+                ok = False
+        if ok:
+            answers.add(&#x27;&#x27;.join(p))
+print(answers)</textarea></div>
+<p>Ответ: <b>yxwz</b>.</p></div></details>
+</div>
+</div>
+
+<!-- ================= УРОВЕНЬ 4 ================= -->
+<h2>Уровень 4. В столбце F нули</h2>
+<p>На ЕГЭ 2026 года чаще давали таблицу, где F = 0. Шаблон тот же — меняется только <b>последнее число в каждой строке таблицы</b>: пишем 0 вместо 1.</p>
+<h3>Разбор</h3>
+<p>Функция <span class="expr">(x → y) ∨ (z ∧ ¬w)</span>.</p>
+<div class="tbl"><table class="tt">
+<tr><th>?</th><th>?</th><th>?</th><th>?</th><th>F</th></tr>
+<tr><td></td><td>1</td><td></td><td>0</td><td>0</td></tr>
+<tr><td>1</td><td></td><td></td><td>1</td><td>0</td></tr>
+<tr><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td></tr>
+</table></div>
+<div class="steps"><ol>
+  <li><b>Переводим:</b> <code>(x &lt;= y) or (z and not w)</code>.</li>
+  <li><b>Пустых клеток 4</b> — <code>repeat=4</code>.</li>
+  <li><b>Таблица — с нулём в конце каждой строки</b>, потому что F = 0. Вот вся программа:<div class="py"><textarea class="code">from itertools import product, permutations
+
+def F(x, y, z, w):
+    return (x &lt;= y) or (z and not w)
+
+answers = set()
+for a, b, c, d in product([0, 1], repeat=4):
+    table = [(a, 1, b, 0, 0),
+             (1, c, d, 1, 0),
+             (1, 1, 0, 0, 0)]
+    if len(set(table)) &lt; len(table):
+        continue
+    for p in permutations(&#x27;xyzw&#x27;):
+        ok = True
+        for row in table:
+            x = row[p.index(&#x27;x&#x27;)]
+            y = row[p.index(&#x27;y&#x27;)]
+            z = row[p.index(&#x27;z&#x27;)]
+            w = row[p.index(&#x27;w&#x27;)]
+            if F(x, y, z, w) != row[4]:
+                ok = False
+        if ok:
+            answers.add(&#x27;&#x27;.join(p))
+print(answers)</textarea></div></li>
+  <li><b>Ответ:</b> <code>wxyz</code>.</li>
+  <li><b>Почему так получилось (для понимания).</b> Функция — это «ИЛИ». «ИЛИ» равно 0, только когда <b>обе</b> части равны 0. Значит, x → y = 0, то есть всегда x = 1 и y = 0. Поэтому x может стоять только в столбце, где нет ни одного нуля, а y — только там, где нет ни одной единицы. Дальше пришлось бы перебирать варианты вручную, а шаблон делает это сам.</li>
+</ol></div>
+<div class="box remember"><b>Ловушка:</b> забыть поменять 1 на 0 в конце строк. Тогда программа напечатает пустое множество <code>set()</code> или чужой ответ.</div>
+<h3>Реши сам</h3>
+<div class="py"><textarea class="code"># Окошко для задач уровня 4
+</textarea></div>
+<div class="problem">
+<p><b>Задача 4.1.</b> Логическая функция F задаётся выражением <span class="expr">(¬z ∨ w) → ((x ∧ ¬y) ∨ z ∨ ¬w)</span>.
+Дан фрагмент таблицы истинности (строки разные). Какому столбцу соответствует каждая из переменных x, y, z, w? Запишите буквы по порядку столбцов.</p>
+<div class="tbl"><table class="tt">
+<tr><th>?</th><th>?</th><th>?</th><th>?</th><th>F</th></tr>
+<tr><td></td><td></td><td></td><td>0</td><td>0</td></tr>
+<tr><td></td><td>0</td><td></td><td>0</td><td>0</td></tr>
+<tr><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td></tr>
+</table></div>
+<div class="answer" data-answer="yxwz"><b>Ответ:</b>
+<details class="hint"><summary>Подсказка</summary><div>Функция на Python: <code>(not z or w) &lt;= ((x and not y) or z or not w)</code></div></details>
+<details class="hint"><summary>Решение: шаблон, заполненный под эту задачу</summary><div>
+<p>Изменены только строки с функцией и строки таблицы. Нажми «Запустить» — программа напечатает ответ.</p>
+<div class="py"><textarea class="code">from itertools import product, permutations
+
+def F(x, y, z, w):
+    return (not z or w) &lt;= ((x and not y) or z or not w)
+
+answers = set()
+for a, b, c, d, e in product([0, 1], repeat=5):
+    table = [(a, b, c, 0, 0),
+             (d, 0, e, 0, 0),
+             (0, 0, 1, 0, 0)]
+    if len(set(table)) &lt; len(table):
+        continue
+    for p in permutations(&#x27;xyzw&#x27;):
+        ok = True
+        for row in table:
+            x = row[p.index(&#x27;x&#x27;)]
+            y = row[p.index(&#x27;y&#x27;)]
+            z = row[p.index(&#x27;z&#x27;)]
+            w = row[p.index(&#x27;w&#x27;)]
+            if F(x, y, z, w) != row[4]:
+                ok = False
+        if ok:
+            answers.add(&#x27;&#x27;.join(p))
+print(answers)</textarea></div>
+<p>Ответ: <b>yxwz</b>.</p></div></details>
+</div>
+</div>
+<div class="problem">
+<p><b>Задача 4.2.</b> Логическая функция F задаётся выражением <span class="expr">(z ∨ ¬(y ≡ ¬w)) → (¬w ∨ (x ∧ z))</span>.
+Дан фрагмент таблицы истинности (строки разные). Какому столбцу соответствует каждая из переменных x, y, z, w? Запишите буквы по порядку столбцов.</p>
+<div class="tbl"><table class="tt">
+<tr><th>?</th><th>?</th><th>?</th><th>?</th><th>F</th></tr>
+<tr><td></td><td>0</td><td>1</td><td>1</td><td>0</td></tr>
+<tr><td>1</td><td>1</td><td>1</td><td></td><td>0</td></tr>
+<tr><td></td><td>0</td><td>0</td><td></td><td>0</td></tr>
+</table></div>
+<div class="answer" data-answer="wxyz"><b>Ответ:</b>
+<details class="hint"><summary>Подсказка</summary><div>Функция на Python: <code>(z or not (y == (not w))) &lt;= (not w or (x and z))</code></div></details>
+<details class="hint"><summary>Решение: шаблон, заполненный под эту задачу</summary><div>
+<p>Изменены только строки с функцией и строки таблицы. Нажми «Запустить» — программа напечатает ответ.</p>
+<div class="py"><textarea class="code">from itertools import product, permutations
+
+def F(x, y, z, w):
+    return (z or not (y == (not w))) &lt;= (not w or (x and z))
+
+answers = set()
+for a, b, c, d in product([0, 1], repeat=4):
+    table = [(a, 0, 1, 1, 0),
+             (1, 1, 1, b, 0),
+             (c, 0, 0, d, 0)]
+    if len(set(table)) &lt; len(table):
+        continue
+    for p in permutations(&#x27;xyzw&#x27;):
+        ok = True
+        for row in table:
+            x = row[p.index(&#x27;x&#x27;)]
+            y = row[p.index(&#x27;y&#x27;)]
+            z = row[p.index(&#x27;z&#x27;)]
+            w = row[p.index(&#x27;w&#x27;)]
+            if F(x, y, z, w) != row[4]:
+                ok = False
+        if ok:
+            answers.add(&#x27;&#x27;.join(p))
+print(answers)</textarea></div>
+<p>Ответ: <b>wxyz</b>.</p></div></details>
+</div>
+</div>
+<div class="problem">
+<p><b>Задача 4.3.</b> Логическая функция F задаётся выражением <span class="expr">(¬(¬y ∨ w) → x) ≡ ((x ≡ z) → y)</span>.
+Дан фрагмент таблицы истинности (строки разные). Какому столбцу соответствует каждая из переменных x, y, z, w? Запишите буквы по порядку столбцов.</p>
+<div class="tbl"><table class="tt">
+<tr><th>?</th><th>?</th><th>?</th><th>?</th><th>F</th></tr>
+<tr><td>0</td><td></td><td>0</td><td>1</td><td>0</td></tr>
+<tr><td></td><td>1</td><td></td><td>1</td><td>0</td></tr>
+<tr><td>1</td><td></td><td>0</td><td>1</td><td>0</td></tr>
+</table></div>
+<div class="answer" data-answer="yxwz"><b>Ответ:</b>
+<details class="hint"><summary>Подсказка</summary><div>Функция на Python: <code>((not (not y or w)) &lt;= x) == ((x == z) &lt;= y)</code></div></details>
+<details class="hint"><summary>Решение: шаблон, заполненный под эту задачу</summary><div>
+<p>Изменены только строки с функцией и строки таблицы. Нажми «Запустить» — программа напечатает ответ.</p>
+<div class="py"><textarea class="code">from itertools import product, permutations
+
+def F(x, y, z, w):
+    return ((not (not y or w)) &lt;= x) == ((x == z) &lt;= y)
+
+answers = set()
+for a, b, c, d in product([0, 1], repeat=4):
+    table = [(0, a, 0, 1, 0),
+             (b, 1, c, 1, 0),
+             (1, d, 0, 1, 0)]
+    if len(set(table)) &lt; len(table):
+        continue
+    for p in permutations(&#x27;xyzw&#x27;):
+        ok = True
+        for row in table:
+            x = row[p.index(&#x27;x&#x27;)]
+            y = row[p.index(&#x27;y&#x27;)]
+            z = row[p.index(&#x27;z&#x27;)]
+            w = row[p.index(&#x27;w&#x27;)]
+            if F(x, y, z, w) != row[4]:
+                ok = False
+        if ok:
+            answers.add(&#x27;&#x27;.join(p))
+print(answers)</textarea></div>
+<p>Ответ: <b>yxwz</b>.</p></div></details>
+</div>
+</div>
+
+<!-- ================= КАК НА ЕГЭ ================= -->
+<h2>Как на ЕГЭ: финальная проверка</h2>
+<p>Длинные функции и много пустых клеток. Засеки время: на экзамене на задачу около 3–5 минут. Решишь все три — отмечай задание 2 на <a href="index.html">карте побед</a> как «умею».</p>
+<div class="py"><textarea class="code"># Окошко для финальных задач
+</textarea></div>
+<div class="problem">
+<p><b>Задача Е.1.</b> Логическая функция F задаётся выражением <span class="expr">¬((y ∨ (w ≡ ¬z)) ≡ (y ∨ (¬x → z)))</span>.
+Дан фрагмент таблицы истинности (строки разные). Какому столбцу соответствует каждая из переменных x, y, z, w? Запишите буквы по порядку столбцов.</p>
+<div class="tbl"><table class="tt">
+<tr><th>?</th><th>?</th><th>?</th><th>?</th><th>F</th></tr>
+<tr><td></td><td>0</td><td>0</td><td>1</td><td>1</td></tr>
+<tr><td>0</td><td>0</td><td>0</td><td></td><td>1</td></tr>
+<tr><td></td><td>1</td><td></td><td></td><td>1</td></tr>
+</table></div>
+<div class="answer" data-answer="zxyw"><b>Ответ:</b>
+<details class="hint"><summary>Подсказка</summary><div>Функция на Python: <code>not ((y or (w == (not z))) == (y or ((not x) &lt;= z)))</code></div></details>
+<details class="hint"><summary>Решение: шаблон, заполненный под эту задачу</summary><div>
+<p>Изменены только строки с функцией и строки таблицы. Нажми «Запустить» — программа напечатает ответ.</p>
+<div class="py"><textarea class="code">from itertools import product, permutations
+
+def F(x, y, z, w):
+    return not ((y or (w == (not z))) == (y or ((not x) &lt;= z)))
+
+answers = set()
+for a, b, c, d, e in product([0, 1], repeat=5):
+    table = [(a, 0, 0, 1, 1),
+             (0, 0, 0, b, 1),
+             (c, 1, d, e, 1)]
+    if len(set(table)) &lt; len(table):
+        continue
+    for p in permutations(&#x27;xyzw&#x27;):
+        ok = True
+        for row in table:
+            x = row[p.index(&#x27;x&#x27;)]
+            y = row[p.index(&#x27;y&#x27;)]
+            z = row[p.index(&#x27;z&#x27;)]
+            w = row[p.index(&#x27;w&#x27;)]
+            if F(x, y, z, w) != row[4]:
+                ok = False
+        if ok:
+            answers.add(&#x27;&#x27;.join(p))
+print(answers)</textarea></div>
+<p>Ответ: <b>zxyw</b>.</p></div></details>
+</div>
+</div>
+<div class="problem">
+<p><b>Задача Е.2.</b> Логическая функция F задаётся выражением <span class="expr">w ∧ (z ∨ ¬y) ∧ (x ∨ (w ≡ ¬z))</span>.
+Дан фрагмент таблицы истинности (строки разные). Какому столбцу соответствует каждая из переменных x, y, z, w? Запишите буквы по порядку столбцов.</p>
+<div class="tbl"><table class="tt">
+<tr><th>?</th><th>?</th><th>?</th><th>?</th><th>F</th></tr>
+<tr><td></td><td>0</td><td></td><td></td><td>1</td></tr>
+<tr><td>0</td><td>0</td><td></td><td>1</td><td>1</td></tr>
+<tr><td>0</td><td></td><td></td><td>0</td><td>1</td></tr>
+</table></div>
+<div class="answer" data-answer="zywx"><b>Ответ:</b>
+<details class="hint"><summary>Подсказка</summary><div>Функция на Python: <code>w and (z or not y) and (x or (w == (not z)))</code></div></details>
+<details class="hint"><summary>Решение: шаблон, заполненный под эту задачу</summary><div>
+<p>Изменены только строки с функцией и строки таблицы. Нажми «Запустить» — программа напечатает ответ.</p>
+<div class="py"><textarea class="code">from itertools import product, permutations
+
+def F(x, y, z, w):
+    return w and (z or not y) and (x or (w == (not z)))
+
+answers = set()
+for a, b, c, d, e, f in product([0, 1], repeat=6):
+    table = [(a, 0, b, c, 1),
+             (0, 0, d, 1, 1),
+             (0, e, f, 0, 1)]
+    if len(set(table)) &lt; len(table):
+        continue
+    for p in permutations(&#x27;xyzw&#x27;):
+        ok = True
+        for row in table:
+            x = row[p.index(&#x27;x&#x27;)]
+            y = row[p.index(&#x27;y&#x27;)]
+            z = row[p.index(&#x27;z&#x27;)]
+            w = row[p.index(&#x27;w&#x27;)]
+            if F(x, y, z, w) != row[4]:
+                ok = False
+        if ok:
+            answers.add(&#x27;&#x27;.join(p))
+print(answers)</textarea></div>
+<p>Ответ: <b>zywx</b>.</p></div></details>
+</div>
+</div>
+<div class="problem">
+<p><b>Задача Е.3.</b> Логическая функция F задаётся выражением <span class="expr">(w → (¬x → z)) ∧ (¬y → ¬(w ∧ z))</span>.
+Дан фрагмент таблицы истинности (строки разные). Какому столбцу соответствует каждая из переменных x, y, z, w? Запишите буквы по порядку столбцов.</p>
+<div class="tbl"><table class="tt">
+<tr><th>?</th><th>?</th><th>?</th><th>?</th><th>F</th></tr>
+<tr><td></td><td></td><td>1</td><td></td><td>0</td></tr>
+<tr><td>0</td><td></td><td>1</td><td>1</td><td>0</td></tr>
+<tr><td>0</td><td></td><td>1</td><td>1</td><td>0</td></tr>
+</table></div>
+<div class="answer" data-answer="yxwz"><b>Ответ:</b>
+<details class="hint"><summary>Подсказка</summary><div>Функция на Python: <code>(w &lt;= ((not x) &lt;= z)) and ((not y) &lt;= (not (w and z)))</code></div></details>
+<details class="hint"><summary>Решение: шаблон, заполненный под эту задачу</summary><div>
+<p>Изменены только строки с функцией и строки таблицы. Нажми «Запустить» — программа напечатает ответ.</p>
+<div class="py"><textarea class="code">from itertools import product, permutations
+
+def F(x, y, z, w):
+    return (w &lt;= ((not x) &lt;= z)) and ((not y) &lt;= (not (w and z)))
+
+answers = set()
+for a, b, c, d, e in product([0, 1], repeat=5):
+    table = [(a, b, 1, c, 0),
+             (0, d, 1, 1, 0),
+             (0, e, 1, 1, 0)]
+    if len(set(table)) &lt; len(table):
+        continue
+    for p in permutations(&#x27;xyzw&#x27;):
+        ok = True
+        for row in table:
+            x = row[p.index(&#x27;x&#x27;)]
+            y = row[p.index(&#x27;y&#x27;)]
+            z = row[p.index(&#x27;z&#x27;)]
+            w = row[p.index(&#x27;w&#x27;)]
+            if F(x, y, z, w) != row[4]:
+                ok = False
+        if ok:
+            answers.add(&#x27;&#x27;.join(p))
+print(answers)</textarea></div>
+<p>Ответ: <b>yxwz</b>.</p></div></details>
+</div>
+</div>
+
+<h2>Ловушки</h2>
+<ul>
+  <li><b>Потерял скобки</b> при переводе функции. <code>not y == z</code> и <code>not (y == z)</code> — разные вещи.</li>
+  <li><b>Забыл значение F</b> в конце строки таблицы или поставил 1 вместо 0.</li>
+  <li><b>Перепутал число пустых клеток</b> и <code>repeat</code>.</li>
+  <li><b>Пропустил клетку</b> при переписывании таблицы: каждая строка должна содержать столько чисел, сколько столбцов, плюс F.</li>
+  <li><b>Программа напечатала несколько ответов или ни одного</b> — ищи ошибку в переписанной функции или таблице, а не в шаблоне.</li>
+</ul>
+
+<details class="teacher">
+  <summary>Для учителя</summary>
+  <p><b>Сколько времени:</b> два занятия. Первое: перевод на Python (таблица знаков, почему → это &lt;=), уровень 1, построчный разбор шаблона. Второе: уровни 2–4 и «Как на ЕГЭ».</p>
+  <p><b>Как объяснять шаблон:</b> не целиком, а по частям. Сначала функция F и проверка одной строки вручную. Потом цикл по расстановкам букв (без пустых клеток — это уровень 2). И только потом перебор пустых клеток.</p>
+  <p><b>Где ошибаются:</b> в переводе функции (скобки, отрицание рядом с ==), в числе пустых клеток, забывают поменять значение F на 0.</p>
+  <p><b>Ручной способ</b> (рассуждением по строкам, где F = 1 или F = 0) полезен сильным ученикам — он показан в разборе уровня 4. Но на экзамене шаблон надёжнее: меньше шансов ошибиться в логике.</p>
+  <p><b>Про задачи:</b> все функции и таблицы составлены для курса. Перевод каждой функции на Python проверен по полной таблице истинности, у каждой задачи перебором проверено, что ответ единственный, а заполненный шаблон в «Решении» запущен и даёт этот ответ.</p>
+</details>
+
+<div class="pager"><a href="task-01.html">← Задание 1</a><a href="index.html">Все задания →</a></div>
+</div>
+<script src="course.js"></script>
+</body>
+</html>

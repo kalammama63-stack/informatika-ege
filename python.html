@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Python за 2 урока</title>
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E🐍%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+<div class="wrap">
+
+<div class="top"><a href="index.html">← Все задания</a><span class="where">Решено на странице: <b class="progress">0</b></span></div>
+
+<div class="kicker">Перед заданиями с программой</div>
+<h1>Python за 2 урока</h1>
+<p class="lead">Здесь только те команды, из которых состоят шаблоны для ЕГЭ. Не нужно становиться программистом — нужно понимать каждую строку шаблона и знать, где его поменять.</p>
+
+<div class="box why">
+  <b>Зачем это нужно.</b> Шаблон на ЕГЭ почти никогда не подходит как есть: в задаче другая функция, другие числа, другой файл. Если понимаешь, что делает каждая строка, поправить шаблон — дело одной минуты. Если не понимаешь — шаблон бесполезен.
+</div>
+
+<h2>Где писать программы</h2>
+<p><b>На этом сайте.</b> Под примерами есть окошки с кнопкой «Запустить». Первый запуск займёт 10–20 секунд (загружается Python), потом всё работает быстро. Код в окошке можно менять — пробуй!</p>
+<p><b>На компьютере.</b> На экзамене будет настоящий Python, к нему тоже нужно привыкнуть. Самая простая программа для новичка — <b>Thonny</b> (<a href="https://thonny.org" target="_blank" rel="noopener">thonny.org</a>): пишешь код в верхнем окне, нажимаешь зелёную кнопку ▶, результат появляется внизу.</p>
+
+<!-- ======================= УРОК 1 ======================= -->
+<h2>Урок 1. Печать, переменные, логика, условие</h2>
+
+<h3>1. print — напечатать</h3>
+<div class="py"><textarea class="code">print("Привет!")
+print(2 + 3)
+print("Ответ:", 7 * 6)</textarea></div>
+<ul class="lines">
+  <li><span class="ln">1</span><code>print("Привет!")</code>
+    <p><span class="w w1">Что делает:</span> печатает текст в кавычках.</p>
+    <p><span class="w w2">Почему так:</span> без кавычек Python решит, что Привет — это имя переменной, и выдаст ошибку. Кавычки только прямые: <code>"</code> или <code>'</code>, «ёлочки» не работают.</p></li>
+  <li><span class="ln">2</span><code>print(2 + 3)</code>
+    <p><span class="w w1">Что делает:</span> сначала считает 2 + 3, потом печатает 5.</p></li>
+  <li><span class="ln">3</span><code>print("Ответ:", 7 * 6)</code>
+    <p><span class="w w1">Что делает:</span> печатает несколько вещей через пробел.</p>
+    <p><span class="w w2">Почему так:</span> запятая в print разделяет, что печатать. Так удобно подписывать результат.</p></li>
+</ul>
+
+<h3>2. Переменная — коробка с надписью</h3>
+<div class="py"><textarea class="code">a = 5
+b = a * 2
+a = a + 1
+print(a, b)</textarea></div>
+<ul class="lines">
+  <li><span class="ln">1</span><code>a = 5</code>
+    <p><span class="w w1">Что делает:</span> кладёт 5 в коробку с надписью <code>a</code>.</p>
+    <p><span class="w w2">Почему так:</span> знак <code>=</code> в Python — это не «равно», а «положи». Справа — что положить, слева — куда.</p></li>
+  <li><span class="ln">2</span><code>b = a * 2</code>
+    <p><span class="w w1">Что делает:</span> достаёт из <code>a</code> пятёрку, умножает на 2, кладёт 10 в <code>b</code>.</p></li>
+  <li><span class="ln">3</span><code>a = a + 1</code>
+    <p><span class="w w1">Что делает:</span> берёт старое значение <code>a</code> (5), прибавляет 1, кладёт обратно. Теперь <code>a</code> = 6.</p>
+    <p><span class="w w2">Почему так:</span> с точки зрения математики это бессмыслица, но для «положи» — нормально: сначала считается правая часть, потом результат кладётся в коробку.</p></li>
+  <li><span class="ln">4</span><code>print(a, b)</code>
+    <p><span class="w w1">Что делает:</span> печатает 6 10. Значение <code>b</code> не изменилось: его посчитали раньше, когда <code>a</code> было 5.</p></li>
+</ul>
+<p>Имена переменных — латинскими буквами, без пробелов, не начинаются с цифры.</p>
+
+<h3>3. Арифметика</h3>
+<div class="tbl"><table>
+  <tr><th>Знак</th><th>Что делает</th><th>Пример</th><th>Результат</th></tr>
+  <tr><td><code>+ - *</code></td><td>плюс, минус, умножить</td><td><code>7 * 3</code></td><td>21</td></tr>
+  <tr><td><code>/</code></td><td>деление</td><td><code>17 / 5</code></td><td>3.4</td></tr>
+  <tr><td><code>//</code></td><td>деление нацело</td><td><code>17 // 5</code></td><td>3</td></tr>
+  <tr><td><code>%</code></td><td>остаток от деления</td><td><code>17 % 5</code></td><td>2</td></tr>
+  <tr><td><code>**</code></td><td>степень</td><td><code>2 ** 4</code></td><td>16</td></tr>
+</table></div>
+<p><b>17 конфет на 5 друзей:</b> каждому <code>17 // 5 = 3</code>, в остатке <code>17 % 5 = 2</code>. Остаток — самый полезный знак на ЕГЭ: «число делится на 7» на Python пишется <code>n % 7 == 0</code> (остаток от деления на 7 равен нулю).</p>
+
+<h3>4. Правда и ложь: сравнения и логика</h3>
+<p>Сравнение даёт <code>True</code> (правда) или <code>False</code> (ложь). Для Python <b>True — это 1, а False — это 0</b>. Это очень пригодится в задании 2, где таблицы истинности из нулей и единиц.</p>
+<div class="py"><textarea class="code">print(5 > 3)
+print(5 == 3)
+print(True == 1)
+x = 1
+y = 0
+print(x and y, x or y, not x)</textarea></div>
+<div class="tbl"><table>
+  <tr><th>Python</th><th>Значит</th><th>В логике ЕГЭ</th></tr>
+  <tr><td><code>==</code></td><td>равно (два знака!)</td><td>≡ эквивалентность</td></tr>
+  <tr><td><code>!=</code></td><td>не равно</td><td></td></tr>
+  <tr><td><code>&lt;  &gt;  &lt;=  &gt;=</code></td><td>меньше, больше, не больше, не меньше</td><td><code>&lt;=</code> — это → импликация (см. задание 2)</td></tr>
+  <tr><td><code>and</code></td><td>и: правда, если оба правда</td><td>∧ конъюнкция</td></tr>
+  <tr><td><code>or</code></td><td>или: правда, если хоть один правда</td><td>∨ дизъюнкция</td></tr>
+  <tr><td><code>not</code></td><td>не: меняет правду на ложь</td><td>¬ отрицание</td></tr>
+</table></div>
+<ul class="lines">
+  <li><span class="ln">6</span><code>print(x and y, x or y, not x)</code>
+    <p><span class="w w1">Что делает:</span> печатает <code>0 1 False</code>. «1 и 0» — ложь, «1 или 0» — правда, «не 1» — ложь.</p>
+    <p><span class="w w2">Почему печатает то 0, то False:</span> <code>and</code> и <code>or</code> возвращают одно из своих чисел, а <code>not</code> — всегда True или False. Для проверок это неважно: 0 и False для Python одно и то же.</p></li>
+</ul>
+<div class="box remember"><b>Скобки ставь всегда.</b> В Python <code>not</code> слабее, чем <code>==</code>: запись <code>not x == y</code> значит «не (x равно y)». Чтобы не гадать, бери в скобки каждую часть: <code>(not x) == y</code>.</div>
+
+<h3>5. Условие if — «если»</h3>
+<div class="py" data-stdin="14"><textarea class="code">n = int(input())
+if n % 7 == 0:
+    print("делится на 7")
+else:
+    print("не делится на 7")</textarea></div>
+<ul class="lines">
+  <li><span class="ln">1</span><code>n = int(input())</code>
+    <p><span class="w w1">Что делает:</span> <code>input()</code> берёт то, что ввели (на сайте — окошко «Ввод»), <code>int()</code> превращает текст в число.</p>
+    <p><span class="w w2">Почему так:</span> <code>input()</code> всегда даёт текст. «14» и 14 для Python разные вещи: с текстом считать нельзя.</p></li>
+  <li><span class="ln">2</span><code>if n % 7 == 0:</code>
+    <p><span class="w w1">Что делает:</span> проверяет условие «остаток от деления на 7 равен 0».</p>
+    <p><span class="w w2">Почему так:</span> в конце строки с <code>if</code> обязательно <b>двоеточие</b> — так Python понимает, что дальше идёт то, что делать.</p></li>
+  <li><span class="ln">3</span><code>    print("делится на 7")</code>
+    <p><span class="w w1">Что делает:</span> выполняется, только если условие верно.</p>
+    <p><span class="w w2">Почему отступ:</span> 4 пробела (клавиша Tab) показывают, что строка <b>внутри</b> if. Отступы в Python — не для красоты, они меняют смысл.</p></li>
+  <li><span class="ln">4–5</span><code>else:</code>
+    <p><span class="w w1">Что делает:</span> «иначе» — выполняется, если условие неверно. Пишется ровно под <code>if</code>.</p></li>
+</ul>
+
+<div class="py" data-tests='[{"in":"21","out":"да"},{"in":"10","out":"нет"},{"in":"0","out":"да"},{"in":"7","out":"нет"}]'>
+  <div class="task"><b>Задача П.1.</b> Вводится число. Выведи <code>да</code>, если оно делится на 3, и <code>нет</code> — если не делится.</div>
+  <textarea class="code">n = int(input())
+</textarea>
+  <details class="hint"><summary>Подсказка</summary><div>Как в примере выше, только остаток от деления на 3: <code>n % 3 == 0</code>.</div></details>
+</div>
+
+<!-- ======================= УРОК 2 ======================= -->
+<h2>Урок 2. Циклы, перебор, функции</h2>
+
+<h3>6. for — повторить для каждого</h3>
+<div class="py"><textarea class="code">for i in range(5):
+    print(i, i * i)
+for letter in 'xyz':
+    print(letter)</textarea></div>
+<ul class="lines">
+  <li><span class="ln">1</span><code>for i in range(5):</code>
+    <p><span class="w w1">Что делает:</span> повторяет строки с отступом для i = 0, 1, 2, 3, 4.</p>
+    <p><span class="w w2">Почему так:</span> <code>range(5)</code> — это числа <b>от 0 до 4</b>: пять штук, начиная с нуля. Python почти всё считает с нуля. Числа от 1 до 100 — это <code>range(1, 101)</code>: правая граница не входит.</p></li>
+  <li><span class="ln">2</span><code>    print(i, i * i)</code>
+    <p><span class="w w1">Что делает:</span> печатает число и его квадрат. Выполняется 5 раз, потому что стоит с отступом внутри for.</p></li>
+  <li><span class="ln">3</span><code>for letter in 'xyz':</code>
+    <p><span class="w w1">Что делает:</span> for умеет идти не только по числам, но и по буквам строки, по элементам списка — по чему угодно.</p></li>
+</ul>
+
+<h3>7. Список, кортеж, множество</h3>
+<div class="py"><textarea class="code">row = (1, 0, 1, 1)
+print(row[0], row[3])
+print(len(row))
+print(set([1, 0, 1, 1]))
+print(len(set([(1, 0), (1, 0), (0, 1)])))</textarea></div>
+<ul class="lines">
+  <li><span class="ln">1</span><code>row = (1, 0, 1, 1)</code>
+    <p><span class="w w1">Что делает:</span> кладёт в переменную несколько чисел сразу. В круглых скобках — <b>кортеж</b>, в квадратных <code>[1, 0, 1]</code> — <b>список</b>. Для наших шаблонов разницы почти нет.</p>
+    <p><span class="w w2">Почему так:</span> строка таблицы истинности — это как раз несколько чисел подряд.</p></li>
+  <li><span class="ln">2</span><code>print(row[0], row[3])</code>
+    <p><span class="w w1">Что делает:</span> берёт элемент по номеру. <b>Нумерация с нуля:</b> <code>row[0]</code> — первый, <code>row[3]</code> — четвёртый.</p></li>
+  <li><span class="ln">3</span><code>print(len(row))</code>
+    <p><span class="w w1">Что делает:</span> <code>len</code> — сколько элементов. Здесь 4.</p></li>
+  <li><span class="ln">4</span><code>print(set([1, 0, 1, 1]))</code>
+    <p><span class="w w1">Что делает:</span> <code>set</code> — <b>множество</b>: убирает повторы. Останется {0, 1}.</p></li>
+  <li><span class="ln">5</span><code>print(len(set([(1, 0), (1, 0), (0, 1)])))</code>
+    <p><span class="w w1">Что делает:</span> было 3 строки, без повторов осталось 2.</p>
+    <p><span class="w w2">Зачем это на ЕГЭ:</span> так проверяют, что все строки таблицы разные: если после <code>set</code> строк стало меньше — были одинаковые.</p></li>
+</ul>
+
+<h3>8. Функция — своя команда</h3>
+<div class="py"><textarea class="code">def F(x, y):
+    return x * 10 + y
+
+print(F(2, 5))
+print(F(7, 0))</textarea></div>
+<ul class="lines">
+  <li><span class="ln">1</span><code>def F(x, y):</code>
+    <p><span class="w w1">Что делает:</span> создаёт свою команду <code>F</code>, которая принимает два значения и называет их x и y.</p>
+    <p><span class="w w2">Почему так:</span> формулу пишем <b>один раз</b>, а используем сколько угодно. В задании 2 сюда пишется логическая функция из условия.</p></li>
+  <li><span class="ln">2</span><code>    return x * 10 + y</code>
+    <p><span class="w w1">Что делает:</span> <code>return</code> — «верни ответ»: то, что получится, станет результатом <code>F(...)</code>.</p></li>
+  <li><span class="ln">4</span><code>print(F(2, 5))</code>
+    <p><span class="w w1">Что делает:</span> вызывает функцию с x = 2, y = 5 и печатает 25.</p></li>
+</ul>
+
+<h3>9. Перебор всех вариантов: product и permutations</h3>
+<p>В Python есть готовые команды для перебора. Их нужно подключить строкой <code>from itertools import ...</code>.</p>
+<div class="py"><textarea class="code">from itertools import product, permutations
+
+for a, b in product([0, 1], repeat=2):
+    print(a, b)
+print('---')
+for p in permutations('xyz'):
+    print(p, ''.join(p))</textarea></div>
+<ul class="lines">
+  <li><span class="ln">1</span><code>from itertools import product, permutations</code>
+    <p><span class="w w1">Что делает:</span> подключает две готовые команды из набора <code>itertools</code>.</p>
+    <p><span class="w w2">Почему так:</span> писать перебор самим долго и легко ошибиться. На экзамене эти команды доступны.</p></li>
+  <li><span class="ln">3</span><code>for a, b in product([0, 1], repeat=2):</code>
+    <p><span class="w w1">Что делает:</span> перебирает все сочетания: a и b каждое бывает 0 или 1. Получится 00, 01, 10, 11.</p>
+    <p><span class="w w2">Почему так:</span> <code>[0, 1]</code> — какие значения бывают, <code>repeat=2</code> — сколько переменных. Для четырёх переменных — <code>repeat=4</code> и 16 вариантов.</p></li>
+  <li><span class="ln">6</span><code>for p in permutations('xyz'):</code>
+    <p><span class="w w1">Что делает:</span> перебирает все способы расставить буквы x, y, z по порядку: xyz, xzy, yxz… всего 6.</p>
+    <p><span class="w w2">Зачем это на ЕГЭ:</span> в задании 2 нужно понять, какая буква в каком столбце, — перебираем все расстановки.</p></li>
+  <li><span class="ln">7</span><code>    print(p, ''.join(p))</code>
+    <p><span class="w w1">Что делает:</span> <code>p</code> выглядит как <code>('y', 'x', 'z')</code>, а <code>''.join(p)</code> склеивает буквы в слово <code>yxz</code> — ровно в таком виде пишут ответ.</p></li>
+</ul>
+
+<h3>10. Где стоит буква: index</h3>
+<div class="py"><textarea class="code">p = ('y', 'z', 'x', 'w')
+print(p.index('x'))
+row = (0, 1, 1, 0)
+print(row[p.index('x')])</textarea></div>
+<ul class="lines">
+  <li><span class="ln">2</span><code>print(p.index('x'))</code>
+    <p><span class="w w1">Что делает:</span> ищет, на каком месте стоит 'x'. Печатает 2 (счёт с нуля: y — 0, z — 1, x — 2).</p></li>
+  <li><span class="ln">4</span><code>print(row[p.index('x')])</code>
+    <p><span class="w w1">Что делает:</span> «найди, в каком столбце x, и возьми из строки число оттуда». Печатает 1.</p>
+    <p><span class="w w2">Зачем это на ЕГЭ:</span> это главная строка шаблона задания 2 — она переводит столбцы таблицы в значения x, y, z, w.</p></li>
+</ul>
+
+<h3>11. continue — «пропусти этот круг»</h3>
+<div class="py"><textarea class="code">for i in range(6):
+    if i % 2 == 1:
+        continue
+    print(i)</textarea></div>
+<ul class="lines">
+  <li><span class="ln">3</span><code>        continue</code>
+    <p><span class="w w1">Что делает:</span> сразу переходит к следующему повтору цикла, остальные строки пропускаются. Здесь печатаются только чётные: 0, 2, 4.</p>
+    <p><span class="w w2">Зачем это на ЕГЭ:</span> отбросить неподходящий вариант и не проверять его дальше.</p></li>
+</ul>
+
+<div class="py" data-tests='[{"in":"","out":"0 0 1\n0 1 1\n1 1 1"}]'>
+  <div class="task"><b>Задача П.2.</b> Перебери все сочетания x, y, z из нулей и единиц и напечатай (через пробел) только те, где <code>x &lt;= y</code> и <code>y &lt;= z</code> и z равно 1.</div>
+  <textarea class="code">from itertools import product
+
+for x, y, z in product([0, 1], repeat=3):
+</textarea>
+  <details class="hint"><summary>Подсказка</summary><div>Внутри цикла: <code>if x &lt;= y and y &lt;= z and z == 1:</code> и под ним с отступом <code>print(x, y, z)</code>.</div></details>
+</div>
+
+<div class="py" data-tests='[{"in":"","out":"6"}]'>
+  <div class="task"><b>Задача П.3.</b> Сколько существует расстановок букв <code>xyz</code>? Напечатай число, посчитав их в цикле.</div>
+  <textarea class="code">from itertools import permutations
+
+count = 0
+for p in permutations('xyz'):
+    count = count + 1
+</textarea>
+  <details class="hint"><summary>Подсказка</summary><div>После цикла (без отступа!) допиши <code>print(count)</code>.</div></details>
+</div>
+
+<div class="box remember"><b>Вот и всё.</b> Этих команд хватает для шаблонов большинства заданий ЕГЭ. Дальше на странице каждого задания шаблон разобран построчно — там будут встречаться только эти команды.</div>
+
+<details class="teacher">
+  <summary>Для учителя</summary>
+  <p><b>Как вести:</b> два занятия. Урок 1 — разделы 1–5 и задача П.1. Урок 2 — разделы 6–11 и задачи П.2–П.3. Каждый пример ученик запускает сам и что-нибудь в нём меняет: «а что будет, если…».</p>
+  <p><b>Где ошибаются:</b> <code>=</code> вместо <code>==</code>; забытое двоеточие; отступы; счёт с единицы вместо нуля (<code>row[1]</code> — это второй элемент); <code>range(1, 100)</code> не включает 100.</p>
+  <p><b>Не надо</b> подробно объяснять типы данных, классы и прочее. Цель — читать и править шаблоны.</p>
+</details>
+
+<div class="pager"><a href="index.html">← Все задания</a><a href="task-02.html">Задание 2 →</a></div>
+</div>
+<script src="course.js"></script>
+</body>
+</html>
