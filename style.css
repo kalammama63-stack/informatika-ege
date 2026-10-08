@@ -229,3 +229,5 @@ pre.num .cl::before {
 .lines .w3 { color: var(--ok); }
 .expr { font-family: "Cambria Math", "Segoe UI Symbol", "Segoe UI", serif; font-size: 1.08em; font-weight: 600; }
 table.tt th, table.tt td { min-width: 40px; }
+.lines li > code, .answer code { overflow-wrap: anywhere; }
+td code { white-space: nowrap; }

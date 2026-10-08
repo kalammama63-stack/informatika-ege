@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Задание 10 · Маска подсети</title>
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E🐍%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+<div class="wrap">
+
+<div class="top"><a href="index.html">← Все задания</a><span class="where">Решено на странице: <b class="progress">0</b></span></div>
+
+<div class="kicker">Задание 10 · базовый уровень · 1 балл · около 3 минут</div>
+<h1>Задание 10. IP-адрес и маска подсети</h1>
+<p class="lead">В 2027 году это задание стоит под номером 10 (раньше было 13). Звучит страшно, а решается за минуту: вручную — одним делением, на Python — пятью строками.</p>
+
+<div class="box why">
+  <b>Где это в жизни.</b> У каждого устройства в сети — телефона, ноутбука, роутера — есть IP-адрес. Маска показывает, какая часть адреса — «номер сети» (как номер дома), а какая — «номер устройства» (как номер квартиры).
+</div>
+
+<h2>Как задание выглядит на ЕГЭ</h2>
+<div class="box">
+  <p style="margin:0"><i>Сеть задана IP-адресом одного из входящих в неё узлов 189.163.226.71 и сетевой маской 255.255.255.240. Найдите IP-адрес сети. В ответе укажите сумму числовых значений октетов найденного IP-адреса. Например, если бы найденный адрес был 100.20.3.4, то в ответе следовало бы записать 127.</i> (ЕГЭ 2026, пересказ)</p>
+</div>
+<p>Вместо адреса сети могут спросить <b>широковещательный адрес</b> или <b>наибольший адрес, который можно присвоить компьютеру</b>. Ответ всегда — <b>сумма четырёх чисел адреса</b>. В 2027 году в проекте демоверсии именно такой формат.</p>
+
+<h2>Что нужно знать</h2>
+<ul>
+  <li><b>IP-адрес</b> — четыре числа от 0 до 255 через точку: 189.163.226.71. Каждое число называют <b>октетом</b> (в двоичной записи это 8 цифр).</li>
+  <li><b>Маска</b> — тоже четыре числа. В двоичной записи у неё сначала идут <b>одни единицы, потом одни нули</b>. Поэтому в маске бывают только такие числа:</li>
+</ul>
+<div class="tbl"><table>
+  <tr><th>Число в маске</th><th>Двоичная запись</th><th>Единиц</th><th>Блок = 256 − число</th></tr>
+  <tr><td>0</td><td><code>00000000</code></td><td>0</td><td>256</td></tr>
+  <tr><td>128</td><td><code>10000000</code></td><td>1</td><td>128</td></tr>
+  <tr><td>192</td><td><code>11000000</code></td><td>2</td><td>64</td></tr>
+  <tr><td>224</td><td><code>11100000</code></td><td>3</td><td>32</td></tr>
+  <tr><td>240</td><td><code>11110000</code></td><td>4</td><td>16</td></tr>
+  <tr><td>248</td><td><code>11111000</code></td><td>5</td><td>8</td></tr>
+  <tr><td>252</td><td><code>11111100</code></td><td>6</td><td>4</td></tr>
+  <tr><td>254</td><td><code>11111110</code></td><td>7</td><td>2</td></tr>
+  <tr><td>255</td><td><code>11111111</code></td><td>8</td><td>1</td></tr>
+</table></div>
+<ul>
+  <li><b>Адрес сети</b> — первый адрес сети. У компьютера его быть не может.</li>
+  <li><b>Широковещательный адрес</b> — последний адрес сети («всем сразу»). У компьютера его тоже быть не может.</li>
+  <li><b>Адреса компьютеров</b> — всё, что между ними: от «адрес сети + 1» до «широковещательный − 1».</li>
+</ul>
+
+<h2>Способ 1. Вручную: метод «размера блока»</h2>
+<div class="box remember">
+  <b>Иди по четырём числам маски слева направо:</b>
+  <ol style="margin:8px 0 0">
+    <li>Где в маске <b>255</b> — число адреса <b>переписываем как есть</b>.</li>
+    <li>Где в маске <b>0</b> — в адресе сети пишем <b>0</b>, в широковещательном <b>255</b>.</li>
+    <li>Где в маске <b>другое число</b> (оно одно, «пограничное») — считаем <b>блок = 256 − число маски</b>. Число адреса делим на блок нацело и умножаем обратно — это число адреса сети. Прибавляем блок − 1 — это число широковещательного.</li>
+  </ol>
+</div>
+<p>Почему это работает: маска делит числа от 0 до 255 на одинаковые блоки. Адрес сети — начало блока, в который попал наш адрес; широковещательный — конец этого блока.</p>
+
+<!-- ================= ШАБЛОН ================= -->
+<h2>Способ 2. Шаблон на Python: разбор каждой строки</h2>
+<p>В Python есть готовый набор <code>ipaddress</code>, который умеет всё это сам.</p>
+<pre class="tpl num"><code>from ipaddress import ip_network
+
+net = ip_network('189.163.226.71/255.255.255.240', strict=False)
+adr = str(net.network_address)
+parts = adr.split('.')
+print(int(parts[0]) + int(parts[1]) + int(parts[2]) + int(parts[3]))</code></pre>
+<ul class="lines">
+  <li><span class="ln">1</span><code>from ipaddress import ip_network</code>
+    <p><span class="w w1">Что делает:</span> подключает команду <code>ip_network</code> — она по адресу и маске строит сеть.</p>
+    <p><span class="w w3">Что менять:</span> ничего.</p></li>
+  <li><span class="ln">3</span><code>net = ip_network('189.163.226.71/255.255.255.240', strict=False)</code>
+    <p><span class="w w1">Что делает:</span> создаёт сеть, в которой находится этот адрес с этой маской. Адрес и маска пишутся в кавычках через косую черту <code>/</code>.</p>
+    <p><span class="w w2">Почему strict=False:</span> нам дали адрес <b>компьютера</b>, а не самой сети. Без этой приписки Python решит, что мы ошиблись, и выдаст ошибку <code>has host bits set</code>. <code>strict=False</code> — «не придирайся, найди сеть сам».</p>
+    <p><span class="w w3">Что менять:</span> адрес и маску из своей задачи.</p></li>
+  <li><span class="ln">4</span><code>adr = str(net.network_address)</code>
+    <p><span class="w w1">Что делает:</span> берёт адрес сети и превращает его в строку <code>'189.163.226.64'</code>.</p>
+    <p><span class="w w2">Почему str:</span> чтобы потом разрезать строку по точкам.</p>
+    <p><span class="w w3">Что менять:</span> <b>главная строка, которая зависит от вопроса:</b></p>
+    <div class="tbl"><table>
+      <tr><th>Что спрашивают</th><th>Что писать</th></tr>
+      <tr><td>адрес сети</td><td><code>net.network_address</code></td></tr>
+      <tr><td>широковещательный адрес</td><td><code>net.broadcast_address</code></td></tr>
+      <tr><td>наибольший адрес компьютера</td><td><code>net.broadcast_address - 1</code></td></tr>
+      <tr><td>наименьший адрес компьютера</td><td><code>net.network_address + 1</code></td></tr>
+    </table></div></li>
+  <li><span class="ln">5</span><code>parts = adr.split('.')</code>
+    <p><span class="w w1">Что делает:</span> режет адрес по точкам: <code>['189', '163', '226', '64']</code>.</p>
+    <p><span class="w w3">Что менять:</span> ничего.</p></li>
+  <li><span class="ln">6</span><code>print(int(parts[0]) + … + int(parts[3]))</code>
+    <p><span class="w w1">Что делает:</span> превращает кусочки в числа и складывает — это и есть ответ (642).</p>
+    <p><span class="w w2">Почему int:</span> кусочки — это текст, а текст не складывают как числа: '189' + '163' даст '189163'.</p>
+    <p><span class="w w3">Что менять:</span> ничего.</p></li>
+</ul>
+<div class="py"><textarea class="code">from ipaddress import ip_network
+
+net = ip_network('189.163.226.71/255.255.255.240', strict=False)
+adr = str(net.network_address)
+print(adr)
+parts = adr.split('.')
+print(int(parts[0]) + int(parts[1]) + int(parts[2]) + int(parts[3]))</textarea></div>
+
+<!-- ================= УРОВЕНЬ 1 ================= -->
+<h2>Уровень 1. Двоичная запись и маска</h2>
+<p>Чтобы понимать, что происходит, нужно уметь записывать числа до 255 в двоичной системе. Разложи число на сумму из 128, 64, 32, 16, 8, 4, 2, 1: где слагаемое есть — пиши 1, нет — 0.</p>
+<h3>Разбор</h3>
+<p>Запишем 172 в двоичной системе.</p>
+<div class="steps"><ol>
+  <li>172 ≥ 128 → пишем <b>1</b>, остаётся 44.</li>
+  <li>44 &lt; 64 → <b>0</b>. 44 ≥ 32 → <b>1</b>, остаётся 12.</li>
+  <li>12 &lt; 16 → <b>0</b>. 12 ≥ 8 → <b>1</b>, остаётся 4.</li>
+  <li>4 ≥ 4 → <b>1</b>, остаётся 0. Дальше 2 и 1 → <b>0</b>, <b>0</b>.</li>
+  <li><b>Ответ:</b> 10101100. Проверка на Python: <code>print(bin(172))</code> → <code>0b10101100</code> (приставка 0b значит «двоичное»).</li>
+</ol></div>
+<div class="py"><textarea class="code"># Окошко для уровня 1
+print(bin(172))
+print(bin(224)[2:])</textarea></div>
+<div class="answer" data-answer="11100000"><p style="margin-top:0"><b>Задача 1.1.</b> Запишите число 224 в двоичной системе счисления (8 цифр).</p>
+<details class="hint"><summary>Подсказка</summary><div>Разложи 224 на степени двойки: 128, 64, 32, 16, 8, 4, 2, 1.</div></details>
+<details class="hint"><summary>Решение: программа</summary><div>
+<div class="py"><textarea class="code">print(bin(224)[2:])   # bin даёт &#x27;0b...&#x27;, [2:] отрезает &#x27;0b&#x27;</textarea></div>
+<p>Ответ: <b>11100000</b>.</p></div></details>
+</div>
+<div class="answer" data-answer="10101100"><p style="margin-top:0"><b>Задача 1.2.</b> Запишите число 172 в двоичной системе счисления (8 цифр).</p>
+<details class="hint"><summary>Подсказка</summary><div>Разложи 172 на степени двойки: 128, 64, 32, 16, 8, 4, 2, 1.</div></details>
+<details class="hint"><summary>Решение: программа</summary><div>
+<div class="py"><textarea class="code">print(bin(172)[2:])   # bin даёт &#x27;0b...&#x27;, [2:] отрезает &#x27;0b&#x27;</textarea></div>
+<p>Ответ: <b>10101100</b>.</p></div></details>
+</div>
+<div class="answer" data-answer="20"><p style="margin-top:0"><b>Задача 1.3.</b> Сколько единиц в двоичной записи маски 255.255.240.0?</p>
+<details class="hint"><summary>Подсказка</summary><div>255 — это 8 единиц. Остальные числа маски: 128 — 1 единица, 192 — 2, 224 — 3, 240 — 4, 248 — 5, 252 — 6, 254 — 7.</div></details>
+<details class="hint"><summary>Решение: программа</summary><div>
+<div class="py"><textarea class="code">from ipaddress import ip_network
+
+net = ip_network(&#x27;0.0.0.0/255.255.240.0&#x27;)
+print(net.prefixlen)   # число единиц в маске</textarea></div>
+<p>Ответ: <b>20</b>.</p></div></details>
+</div>
+<div class="answer" data-answer="27"><p style="margin-top:0"><b>Задача 1.4.</b> Сколько единиц в двоичной записи маски 255.255.255.224?</p>
+<details class="hint"><summary>Подсказка</summary><div>255 — это 8 единиц. Остальные числа маски: 128 — 1 единица, 192 — 2, 224 — 3, 240 — 4, 248 — 5, 252 — 6, 254 — 7.</div></details>
+<details class="hint"><summary>Решение: программа</summary><div>
+<div class="py"><textarea class="code">from ipaddress import ip_network
+
+net = ip_network(&#x27;0.0.0.0/255.255.255.224&#x27;)
+print(net.prefixlen)   # число единиц в маске</textarea></div>
+<p>Ответ: <b>27</b>.</p></div></details>
+</div>
+<div class="answer" data-answer="762"><p style="margin-top:0"><b>Задача 1.5.</b> Маска содержит 22 единиц. Запишите её как IP-адрес и найдите сумму её четырёх чисел.</p>
+<details class="hint"><summary>Подсказка</summary><div>Восемь единиц — 255. Запиши 22 единиц подряд, дополни нулями до 32 и разбей на 4 группы по 8.</div></details>
+<details class="hint"><summary>Решение: программа</summary><div><div class="py"><textarea class="code">from ipaddress import ip_network
+
+mask = str(ip_network(&#x27;0.0.0.0/22&#x27;).netmask)
+print(mask)
+parts = mask.split(&#x27;.&#x27;)
+print(int(parts[0]) + int(parts[1]) + int(parts[2]) + int(parts[3]))</textarea></div><p>Маска 255.255.252.0, ответ: <b>762</b>.</p></div></details>
+</div>
+
+<!-- ================= УРОВЕНЬ 2 ================= -->
+<h2>Уровень 2. Адрес сети</h2>
+<h3>Разбор</h3>
+<p>Узел 64.237.228.143, маска 255.255.248.0. Найдите адрес сети, в ответе — сумма его чисел.</p>
+<div class="steps"><ol>
+  <li><b>Первые два числа маски — 255:</b> переписываем 64 и 237.</li>
+  <li><b>Последнее число маски — 0:</b> в адресе сети там 0.</li>
+  <li><b>Пограничное число маски — 248 (третье).</b> Блок = 256 − 248 = 8. Третье число адреса: 228 // 8 = 28, 28 × 8 = <b>224</b>.</li>
+  <li><b>Адрес сети:</b> 64.237.224.0. Сумма: 64 + 237 + 224 + 0 = <b>525</b>.</li>
+  <li><b>Проверка в двоичной системе (для понимания):</b> 228 = 11100<u>100</u>, маска 248 = 11111<u>000</u>. Где в маске нули — в адресе сети нули: 11100000 = 224. Совпало.</li>
+</ol></div>
+<div class="py"><textarea class="code"># Окошко для уровня 2
+from ipaddress import ip_network
+
+net = ip_network('64.237.228.143/255.255.248.0', strict=False)
+adr = str(net.network_address)
+print(adr)
+parts = adr.split('.')
+print(int(parts[0]) + int(parts[1]) + int(parts[2]) + int(parts[3]))</textarea></div>
+<div class="answer" data-answer="321"><p style="margin-top:0"><b>Задача 2.1.</b> Сеть задана IP-адресом одного из входящих в неё узлов 77.52.203.19 и сетевой маской 255.255.240.0. Найдите IP-адрес сети. В ответе укажите сумму числовых значений октетов найденного IP-адреса.</p>
+<details class="hint"><summary>Подсказка</summary><div>Адрес сети: в «пограничном» числе маски найди размер блока 256 − (число маски), раздели число адреса нацело на блок и умножь обратно. Справа — нули.</div></details>
+<details class="hint"><summary>Решение: программа</summary><div>
+<div class="py"><textarea class="code">from ipaddress import ip_network
+
+net = ip_network(&#x27;77.52.203.19/255.255.240.0&#x27;, strict=False)   # сеть по адресу узла и маске
+adr = str(net.network_address)               # адрес сети
+parts = adr.split(&#x27;.&#x27;)                       # четыре числа адреса
+print(int(parts[0]) + int(parts[1]) + int(parts[2]) + int(parts[3]))</textarea></div>
+<p>Ответ: <b>321</b>.</p></div></details>
+</div>
+<div class="answer" data-answer="585"><p style="margin-top:0"><b>Задача 2.2.</b> Сеть задана IP-адресом одного из входящих в неё узлов 199.47.115.230 и сетевой маской 255.255.255.224. Найдите IP-адрес сети. В ответе укажите сумму числовых значений октетов найденного IP-адреса.</p>
+<details class="hint"><summary>Подсказка</summary><div>Адрес сети: в «пограничном» числе маски найди размер блока 256 − (число маски), раздели число адреса нацело на блок и умножь обратно. Справа — нули.</div></details>
+<details class="hint"><summary>Решение: программа</summary><div>
+<div class="py"><textarea class="code">from ipaddress import ip_network
+
+net = ip_network(&#x27;199.47.115.230/255.255.255.224&#x27;, strict=False)   # сеть по адресу узла и маске
+adr = str(net.network_address)               # адрес сети
+parts = adr.split(&#x27;.&#x27;)                       # четыре числа адреса
+print(int(parts[0]) + int(parts[1]) + int(parts[2]) + int(parts[3]))</textarea></div>
+<p>Ответ: <b>585</b>.</p></div></details>
+</div>
+<div class="answer" data-answer="274"><p style="margin-top:0"><b>Задача 2.3.</b> Сеть задана IP-адресом одного из входящих в неё узлов 146.180.173.153 и сетевой маской 255.192.0.0. Найдите IP-адрес сети. В ответе укажите сумму числовых значений октетов найденного IP-адреса.</p>
+<details class="hint"><summary>Подсказка</summary><div>Адрес сети: в «пограничном» числе маски найди размер блока 256 − (число маски), раздели число адреса нацело на блок и умножь обратно. Справа — нули.</div></details>
+<details class="hint"><summary>Решение: программа</summary><div>
+<div class="py"><textarea class="code">from ipaddress import ip_network
+
+net = ip_network(&#x27;146.180.173.153/255.192.0.0&#x27;, strict=False)   # сеть по адресу узла и маске
+adr = str(net.network_address)               # адрес сети
+parts = adr.split(&#x27;.&#x27;)                       # четыре числа адреса
+print(int(parts[0]) + int(parts[1]) + int(parts[2]) + int(parts[3]))</textarea></div>
+<p>Ответ: <b>274</b>.</p></div></details>
+</div>
+
+<!-- ================= УРОВЕНЬ 3 ================= -->
+<h2>Уровень 3. Широковещательный адрес и адреса компьютеров</h2>
+<h3>Разбор</h3>
+<p>Узел 185.249.55.138, маска 255.255.192.0. Найдите широковещательный адрес.</p>
+<div class="steps"><ol>
+  <li><b>255, 255</b> — переписываем 185 и 249.</li>
+  <li><b>Пограничное число маски — 192 (третье).</b> Блок = 256 − 192 = 64. Начало блока: 55 // 64 = 0, 0 × 64 = 0. Конец блока: 0 + 64 − 1 = <b>63</b>.</li>
+  <li><b>Последнее число маски — 0:</b> в широковещательном адресе там <b>255</b>.</li>
+  <li><b>Широковещательный адрес:</b> 185.249.63.255. Сумма: 185 + 249 + 63 + 255 = <b>752</b>.</li>
+  <li><b>Если бы спросили наибольший адрес компьютера:</b> на 1 меньше — 185.249.63.254, сумма 751. <b>Наименьший:</b> адрес сети + 1 = 185.249.0.1.</li>
+</ol></div>
+<div class="box remember"><b>Ловушка:</b> «наибольший адрес, который можно присвоить компьютеру» — это <b>не</b> широковещательный, а на единицу меньше.</div>
+<div class="py"><textarea class="code"># Окошко для уровня 3: поменяй строку adr = ... по таблице из шаблона
+from ipaddress import ip_network
+
+net = ip_network('185.249.55.138/255.255.192.0', strict=False)
+adr = str(net.broadcast_address)
+print(adr)
+parts = adr.split('.')
+print(int(parts[0]) + int(parts[1]) + int(parts[2]) + int(parts[3]))</textarea></div>
+<div class="answer" data-answer="686"><p style="margin-top:0"><b>Задача 3.1.</b> Сеть задана IP-адресом одного из входящих в неё узлов 201.39.171.90 и сетевой маской 255.255.224.0. Найдите её широковещательный IP-адрес. В ответе укажите сумму числовых значений октетов найденного IP-адреса.</p>
+<details class="hint"><summary>Подсказка</summary><div>Широковещательный адрес — последний адрес сети: начало блока + размер блока − 1, справа — 255.</div></details>
+<details class="hint"><summary>Решение: программа</summary><div>
+<div class="py"><textarea class="code">from ipaddress import ip_network
+
+net = ip_network(&#x27;201.39.171.90/255.255.224.0&#x27;, strict=False)   # сеть по адресу узла и маске
+adr = str(net.broadcast_address)             # широковещательный адрес
+parts = adr.split(&#x27;.&#x27;)                       # четыре числа адреса
+print(int(parts[0]) + int(parts[1]) + int(parts[2]) + int(parts[3]))</textarea></div>
+<p>Ответ: <b>686</b>.</p></div></details>
+</div>
+<div class="answer" data-answer="805"><p style="margin-top:0"><b>Задача 3.2.</b> Сеть задана IP-адресом одного из входящих в неё узлов 154.141.198.190 и сетевой маской 255.255.192.0. Найдите её широковещательный IP-адрес. В ответе укажите сумму числовых значений октетов найденного IP-адреса.</p>
+<details class="hint"><summary>Подсказка</summary><div>Широковещательный адрес — последний адрес сети: начало блока + размер блока − 1, справа — 255.</div></details>
+<details class="hint"><summary>Решение: программа</summary><div>
+<div class="py"><textarea class="code">from ipaddress import ip_network
+
+net = ip_network(&#x27;154.141.198.190/255.255.192.0&#x27;, strict=False)   # сеть по адресу узла и маске
+adr = str(net.broadcast_address)             # широковещательный адрес
+parts = adr.split(&#x27;.&#x27;)                       # четыре числа адреса
+print(int(parts[0]) + int(parts[1]) + int(parts[2]) + int(parts[3]))</textarea></div>
+<p>Ответ: <b>805</b>.</p></div></details>
+</div>
+<div class="answer" data-answer="605"><p style="margin-top:0"><b>Задача 3.3.</b> Сеть задана IP-адресом одного из входящих в неё узлов 143.168.72.213 и сетевой маской 255.255.255.240. Найдите наибольший IP-адрес в данной сети, который может быть присвоен компьютеру. В ответе укажите сумму числовых значений октетов найденного IP-адреса.</p>
+<details class="hint"><summary>Подсказка</summary><div>Наибольший адрес компьютера — на единицу меньше широковещательного.</div></details>
+<details class="hint"><summary>Решение: программа</summary><div>
+<div class="py"><textarea class="code">from ipaddress import ip_network
+
+net = ip_network(&#x27;143.168.72.213/255.255.255.240&#x27;, strict=False)   # сеть по адресу узла и маске
+adr = str(net.broadcast_address - 1)         # наибольший адрес компьютера
+parts = adr.split(&#x27;.&#x27;)                       # четыре числа адреса
+print(int(parts[0]) + int(parts[1]) + int(parts[2]) + int(parts[3]))</textarea></div>
+<p>Ответ: <b>605</b>.</p></div></details>
+</div>
+<div class="answer" data-answer="891"><p style="margin-top:0"><b>Задача 3.4.</b> Сеть задана IP-адресом одного из входящих в неё узлов 191.128.66.83 и сетевой маской 255.192.0.0. Найдите наибольший IP-адрес в данной сети, который может быть присвоен компьютеру. В ответе укажите сумму числовых значений октетов найденного IP-адреса.</p>
+<details class="hint"><summary>Подсказка</summary><div>Наибольший адрес компьютера — на единицу меньше широковещательного.</div></details>
+<details class="hint"><summary>Решение: программа</summary><div>
+<div class="py"><textarea class="code">from ipaddress import ip_network
+
+net = ip_network(&#x27;191.128.66.83/255.192.0.0&#x27;, strict=False)   # сеть по адресу узла и маске
+adr = str(net.broadcast_address - 1)         # наибольший адрес компьютера
+parts = adr.split(&#x27;.&#x27;)                       # четыре числа адреса
+print(int(parts[0]) + int(parts[1]) + int(parts[2]) + int(parts[3]))</textarea></div>
+<p>Ответ: <b>891</b>.</p></div></details>
+</div>
+<div class="answer" data-answer="228"><p style="margin-top:0"><b>Задача 3.5.</b> Сеть задана IP-адресом одного из входящих в неё узлов 10.77.140.33 и сетевой маской 255.255.252.0. Найдите наименьший IP-адрес в данной сети, который может быть присвоен компьютеру. В ответе укажите сумму числовых значений октетов найденного IP-адреса.</p>
+<details class="hint"><summary>Подсказка</summary><div>Наименьший адрес компьютера — на единицу больше адреса сети.</div></details>
+<details class="hint"><summary>Решение: программа</summary><div>
+<div class="py"><textarea class="code">from ipaddress import ip_network
+
+net = ip_network(&#x27;10.77.140.33/255.255.252.0&#x27;, strict=False)   # сеть по адресу узла и маске
+adr = str(net.network_address + 1)           # наименьший адрес компьютера
+parts = adr.split(&#x27;.&#x27;)                       # четыре числа адреса
+print(int(parts[0]) + int(parts[1]) + int(parts[2]) + int(parts[3]))</textarea></div>
+<p>Ответ: <b>228</b>.</p></div></details>
+</div>
+
+<!-- ================= УРОВЕНЬ 4 ================= -->
+<h2>Уровень 4. Сколько адресов в сети</h2>
+<p>Встречалось на ЕГЭ 2024–2026 годов. Количество адресов = 2<sup>число нулей в маске</sup>. Адресов для компьютеров на 2 меньше (без адреса сети и широковещательного).</p>
+<h3>Разбор</h3>
+<p>Маска 255.255.240.0. Сколько адресов в сети?</p>
+<div class="steps"><ol>
+  <li><b>Единиц в маске:</b> 8 + 8 + 4 (240 = 11110000) + 0 = 20.</li>
+  <li><b>Нулей:</b> 32 − 20 = 12.</li>
+  <li><b>Адресов:</b> 2<sup>12</sup> = <b>4096</b>. Для компьютеров: 4094.</li>
+  <li><b>На Python:</b> <code>net.num_addresses</code> — сразу даёт 4096.</li>
+</ol></div>
+<p>Если спрашивают «сколько адресов, у которых число единиц в двоичной записи кратно 5» — перебираем все адреса сети программой:</p>
+<pre class="tpl num"><code>from ipaddress import ip_network
+
+net = ip_network('172.16.168.0/255.255.248.0', strict=False)
+count = 0
+for adr in net:
+    ones = bin(int(adr)).count('1')
+    if ones % 5 == 0:
+        count = count + 1
+print(count)</code></pre>
+<ul class="lines">
+  <li><span class="ln">5</span><code>for adr in net:</code>
+    <p><span class="w w1">Что делает:</span> перебирает все адреса сети по очереди — от адреса сети до широковещательного.</p></li>
+  <li><span class="ln">6</span><code>    ones = bin(int(adr)).count('1')</code>
+    <p><span class="w w1">Что делает:</span> <code>int(adr)</code> — адрес как одно большое число, <code>bin(...)</code> — его двоичная запись, <code>.count('1')</code> — сколько в ней единиц.</p>
+    <p><span class="w w3">Что менять:</span> если спрашивают про нули — тоже можно, но осторожно: <code>bin</code> не пишет ведущие нули. Нулей в 32-битном адресе = 32 − единиц.</p></li>
+  <li><span class="ln">7–8</span><code>    if ones % 5 == 0: count = count + 1</code>
+    <p><span class="w w1">Что делает:</span> если число единиц делится на 5, увеличивает счётчик.</p>
+    <p><span class="w w3">Что менять:</span> условие из задачи: «не кратно 2» — <code>ones % 2 != 0</code>.</p></li>
+</ul>
+<div class="py"><textarea class="code"># Окошко для уровня 4
+from ipaddress import ip_network
+
+net = ip_network('172.16.168.0/255.255.248.0', strict=False)
+print(net.num_addresses)
+count = 0
+for adr in net:
+    ones = bin(int(adr)).count('1')
+    if ones % 5 == 0:
+        count = count + 1
+print(count)</textarea></div>
+<div class="answer" data-answer="8192"><p style="margin-top:0"><b>Задача 4.1.</b> Сеть задана IP-адресом 172.16.96.0 и сетевой маской 255.255.224.0. Сколько всего IP-адресов в этой сети (вместе с адресом сети и широковещательным)?</p>
+<details class="hint"><summary>Подсказка</summary><div>В маске 19 единиц, значит, нулей 13. Адресов в сети 2 в степени «число нулей».</div></details>
+<details class="hint"><summary>Решение: программа</summary><div>
+<div class="py"><textarea class="code">from ipaddress import ip_network
+
+net = ip_network(&#x27;172.16.96.0/255.255.224.0&#x27;, strict=False)
+print(net.num_addresses)   # сколько адресов в сети</textarea></div>
+<p>Ответ: <b>8192</b>.</p></div></details>
+</div>
+<div class="answer" data-answer="2046"><p style="margin-top:0"><b>Задача 4.2.</b> Сеть задана IP-адресом 192.168.32.0 и сетевой маской 255.255.248.0. Сколько в этой сети адресов, которые можно присвоить компьютерам?</p>
+<details class="hint"><summary>Подсказка</summary><div>Из всех адресов сети вычти два: адрес самой сети и широковещательный.</div></details>
+<details class="hint"><summary>Решение: программа</summary><div>
+<div class="py"><textarea class="code">from ipaddress import ip_network
+
+net = ip_network(&#x27;192.168.32.0/255.255.248.0&#x27;, strict=False)
+print(net.num_addresses - 2)   # без адреса сети и широковещательного</textarea></div>
+<p>Ответ: <b>2046</b>.</p></div></details>
+</div>
+<div class="answer" data-answer="1056"><p style="margin-top:0"><b>Задача 4.3.</b> Сеть задана IP-адресом 10.20.48.0 и сетевой маской 255.255.240.0. Сколько в этой сети IP-адресов, для которых количество единиц в двоичной записи кратно 4?</p>
+<details class="hint"><summary>Подсказка</summary><div>Перебери все адреса сети программой и посчитай единицы в каждом.</div></details>
+<details class="hint"><summary>Решение: программа</summary><div>
+<div class="py"><textarea class="code">from ipaddress import ip_network
+
+net = ip_network(&#x27;10.20.48.0/255.255.240.0&#x27;, strict=False)
+count = 0
+for adr in net:                          # перебираем все адреса сети
+    ones = bin(int(adr)).count(&#x27;1&#x27;)      # единиц в двоичной записи
+    if ones % 4 == 0:
+        count = count + 1
+print(count)</textarea></div>
+<p>Ответ: <b>1056</b>.</p></div></details>
+</div>
+<div class="answer" data-answer="262144"><p style="margin-top:0"><b>Задача 4.4.</b> Сеть задана IP-адресом 106.184.0.0 и сетевой маской 255.248.0.0. Сколько в этой сети IP-адресов, для которых количество единиц в двоичной записи кратно 2?</p>
+<details class="hint"><summary>Подсказка</summary><div>Перебери все адреса сети программой и посчитай единицы в каждом.</div></details>
+<details class="hint"><summary>Решение: программа</summary><div>
+<div class="py"><textarea class="code">from ipaddress import ip_network
+
+net = ip_network(&#x27;106.184.0.0/255.248.0.0&#x27;, strict=False)
+count = 0
+for adr in net:                          # перебираем все адреса сети
+    ones = bin(int(adr)).count(&#x27;1&#x27;)      # единиц в двоичной записи
+    if ones % 2 == 0:
+        count = count + 1
+print(count)</textarea></div>
+<p>Ответ: <b>262144</b>.</p></div></details>
+</div>
+
+<!-- ================= КАК НА ЕГЭ ================= -->
+<h2>Как на ЕГЭ: финальная проверка</h2>
+<p>Три задачи в формате 2027 года. Реши каждую <b>двумя способами</b>: вручную и программой. Если ответы совпали — ты точно не ошибся. Получилось — отмечай задание 10 на <a href="index.html">карте побед</a>.</p>
+<div class="py"><textarea class="code"># Окошко для финальных задач
+</textarea></div>
+<div class="answer" data-answer="730"><p style="margin-top:0"><b>Задача Е.1.</b> Сеть задана IP-адресом одного из входящих в неё узлов 217.19.236.201 и сетевой маской 255.255.248.0. Найдите её широковещательный IP-адрес. В ответе укажите сумму числовых значений октетов найденного IP-адреса.</p>
+<details class="hint"><summary>Подсказка</summary><div>Широковещательный адрес — последний адрес сети: начало блока + размер блока − 1, справа — 255.</div></details>
+<details class="hint"><summary>Решение: программа</summary><div>
+<div class="py"><textarea class="code">from ipaddress import ip_network
+
+net = ip_network(&#x27;217.19.236.201/255.255.248.0&#x27;, strict=False)   # сеть по адресу узла и маске
+adr = str(net.broadcast_address)             # широковещательный адрес
+parts = adr.split(&#x27;.&#x27;)                       # четыре числа адреса
+print(int(parts[0]) + int(parts[1]) + int(parts[2]) + int(parts[3]))</textarea></div>
+<p>Ответ: <b>730</b>.</p></div></details>
+</div>
+<div class="answer" data-answer="745"><p style="margin-top:0"><b>Задача Е.2.</b> Сеть задана IP-адресом одного из входящих в неё узлов 93.142.177.58 и сетевой маской 255.248.0.0. Найдите наибольший IP-адрес в данной сети, который может быть присвоен компьютеру. В ответе укажите сумму числовых значений октетов найденного IP-адреса.</p>
+<details class="hint"><summary>Подсказка</summary><div>Наибольший адрес компьютера — на единицу меньше широковещательного.</div></details>
+<details class="hint"><summary>Решение: программа</summary><div>
+<div class="py"><textarea class="code">from ipaddress import ip_network
+
+net = ip_network(&#x27;93.142.177.58/255.248.0.0&#x27;, strict=False)   # сеть по адресу узла и маске
+adr = str(net.broadcast_address - 1)         # наибольший адрес компьютера
+parts = adr.split(&#x27;.&#x27;)                       # четыре числа адреса
+print(int(parts[0]) + int(parts[1]) + int(parts[2]) + int(parts[3]))</textarea></div>
+<p>Ответ: <b>745</b>.</p></div></details>
+</div>
+<div class="answer" data-answer="527"><p style="margin-top:0"><b>Задача Е.3.</b> Сеть задана IP-адресом одного из входящих в неё узлов 178.66.91.247 и сетевой маской 255.255.255.192. Найдите IP-адрес сети. В ответе укажите сумму числовых значений октетов найденного IP-адреса.</p>
+<details class="hint"><summary>Подсказка</summary><div>Адрес сети: в «пограничном» числе маски найди размер блока 256 − (число маски), раздели число адреса нацело на блок и умножь обратно. Справа — нули.</div></details>
+<details class="hint"><summary>Решение: программа</summary><div>
+<div class="py"><textarea class="code">from ipaddress import ip_network
+
+net = ip_network(&#x27;178.66.91.247/255.255.255.192&#x27;, strict=False)   # сеть по адресу узла и маске
+adr = str(net.network_address)               # адрес сети
+parts = adr.split(&#x27;.&#x27;)                       # четыре числа адреса
+print(int(parts[0]) + int(parts[1]) + int(parts[2]) + int(parts[3]))</textarea></div>
+<p>Ответ: <b>527</b>.</p></div></details>
+</div>
+
+<h2>Ловушки</h2>
+<ul>
+  <li><b>Широковещательный вместо наибольшего адреса компьютера</b> — они отличаются на 1.</li>
+  <li><b>Забыл strict=False</b> — Python выдаёт ошибку <code>has host bits set</code>.</li>
+  <li><b>Записал адрес вместо суммы.</b> В 2027 году ответ — сумма четырёх чисел адреса.</li>
+  <li><b>Ошибся в блоке:</b> блок = 256 − число маски, а не само число маски.</li>
+</ul>
+
+<details class="teacher">
+  <summary>Для учителя</summary>
+  <p><b>Изменение 2027 года:</b> задание переехало с номера 13 на номер 10 и стало базового уровня. Формат ответа «сумма октетов» уже был на ЕГЭ 2026 года и остался в проекте демоверсии 2027.</p>
+  <p><b>Сколько времени:</b> одно занятие. Сначала двоичная запись (уровень 1), потом метод блока на доске, потом Python.</p>
+  <p><b>Как объяснять:</b> аналогия «дом и квартира» для сети и узла. Метод блока объясняйте на числовой прямой 0…255, разрезанной на отрезки по 8, 16, 64 — сразу видно, в какой отрезок попал адрес.</p>
+  <p><b>Где ошибаются:</b> путают широковещательный и наибольший адрес компьютера; забывают strict=False; в методе блока берут число маски вместо 256 − число.</p>
+  <p><b>Про задачи:</b> каждый ответ посчитан программой (модуль ipaddress) и перепроверен отдельным расчётом через двоичные операции. Часть задач — на адресах из реальных экзаменов прошлых лет (формулировки свои), часть — свои.</p>
+</details>
+
+<div class="pager"><a href="task-07.html">← Задание 7</a><a href="task-11.html">Задание 11 →</a></div>
+</div>
+<script src="course.js"></script>
+</body>
+</html>

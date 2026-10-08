@@ -225,6 +225,51 @@ print(row[p.index('x')])</textarea></div>
     <p><span class="w w2">Зачем это на ЕГЭ:</span> отбросить неподходящий вариант и не проверять его дальше.</p></li>
 </ul>
 
+<h3>12. break — «стоп, нашли»</h3>
+<div class="py"><textarea class="code">for i in range(1, 100):
+    if 2 ** i >= 1000:
+        print(i)
+        break</textarea></div>
+<ul class="lines">
+  <li><span class="ln">2</span><code>    if 2 ** i >= 1000:</code>
+    <p><span class="w w1">Что делает:</span> проверяет, стало ли 2 в степени i не меньше 1000.</p></li>
+  <li><span class="ln">4</span><code>        break</code>
+    <p><span class="w w1">Что делает:</span> сразу выходит из цикла. Напечатается только первое подходящее i — это 10.</p>
+    <p><span class="w w2">Зачем это на ЕГЭ:</span> когда ищем <b>наименьшее</b> подходящее число — перебираем по возрастанию и останавливаемся на первом.</p></li>
+</ul>
+
+<h3>13. Округления и логарифм: math</h3>
+<div class="py"><textarea class="code">from math import ceil, log2
+
+print(17 / 5, int(17 / 5), ceil(17 / 5))
+print(log2(1024), log2(1000))
+print(ceil(log2(1000)))</textarea></div>
+<ul class="lines">
+  <li><span class="ln">1</span><code>from math import ceil, log2</code>
+    <p><span class="w w1">Что делает:</span> подключает две команды из набора <code>math</code>.</p></li>
+  <li><span class="ln">3</span><code>print(17 / 5, int(17 / 5), ceil(17 / 5))</code>
+    <p><span class="w w1">Что делает:</span> печатает 3.4, 3 и 4. <code>int()</code> отбрасывает дробную часть («целая часть»), <code>ceil()</code> округляет <b>вверх</b>.</p>
+    <p><span class="w w2">Зачем это на ЕГЭ:</span> «в ответе запишите целую часть» — это <code>int()</code>. «Минимальное целое число байт» — это <code>ceil()</code>: 7,5 байта не бывает, нужно 8.</p></li>
+  <li><span class="ln">4</span><code>print(log2(1024), log2(1000))</code>
+    <p><span class="w w1">Что делает:</span> <code>log2(n)</code> отвечает на вопрос «в какую степень возвести 2, чтобы получить n». 2<sup>10</sup> = 1024, поэтому <code>log2(1024)</code> = 10. Для 1000 получится 9.96…</p></li>
+  <li><span class="ln">5</span><code>print(ceil(log2(1000)))</code>
+    <p><span class="w w1">Что делает:</span> округляет 9.96 вверх — получается 10.</p>
+    <p><span class="w w2">Зачем это на ЕГЭ:</span> так считают, <b>сколько бит нужно</b>, чтобы закодировать 1000 разных вариантов (цветов, символов). 9 бит — это только 512 вариантов, мало; 10 бит — 1024, хватает.</p></li>
+</ul>
+
+<h3>14. Разрезать строку: split</h3>
+<div class="py"><textarea class="code">adr = '189.163.226.64'
+parts = adr.split('.')
+print(parts)
+print(int(parts[0]) + int(parts[1]) + int(parts[2]) + int(parts[3]))</textarea></div>
+<ul class="lines">
+  <li><span class="ln">2</span><code>parts = adr.split('.')</code>
+    <p><span class="w w1">Что делает:</span> режет строку по точкам. Получается список из четырёх кусочков-строк: <code>['189', '163', '226', '64']</code>.</p></li>
+  <li><span class="ln">4</span><code>print(int(parts[0]) + … + int(parts[3]))</code>
+    <p><span class="w w1">Что делает:</span> превращает каждый кусочек в число (<code>int</code>) и складывает: 642.</p>
+    <p><span class="w w2">Зачем это на ЕГЭ:</span> в задании 10 ответ — сумма чисел IP-адреса.</p></li>
+</ul>
+
 <div class="py" data-tests='[{"in":"","out":"0 0 1\n0 1 1\n1 1 1"}]'>
   <div class="task"><b>Задача П.2.</b> Перебери все сочетания x, y, z из нулей и единиц и напечатай (через пробел) только те, где <code>x &lt;= y</code> и <code>y &lt;= z</code> и z равно 1.</div>
   <textarea class="code">from itertools import product
@@ -249,7 +294,7 @@ for p in permutations('xyz'):
 
 <details class="teacher">
   <summary>Для учителя</summary>
-  <p><b>Как вести:</b> два занятия. Урок 1 — разделы 1–5 и задача П.1. Урок 2 — разделы 6–11 и задачи П.2–П.3. Каждый пример ученик запускает сам и что-нибудь в нём меняет: «а что будет, если…».</p>
+  <p><b>Как вести:</b> два занятия. Урок 1 — разделы 1–5 и задача П.1. Урок 2 — разделы 6–14 и задачи П.2–П.3. Разделы 12–14 (break, округления, split) нужны с заданий 7, 10, 11 — их можно разобрать позже, перед этими заданиями. Каждый пример ученик запускает сам и что-нибудь в нём меняет: «а что будет, если…».</p>
   <p><b>Где ошибаются:</b> <code>=</code> вместо <code>==</code>; забытое двоеточие; отступы; счёт с единицы вместо нуля (<code>row[1]</code> — это второй элемент); <code>range(1, 100)</code> не включает 100.</p>
   <p><b>Не надо</b> подробно объяснять типы данных, классы и прочее. Цель — читать и править шаблоны.</p>
 </details>
