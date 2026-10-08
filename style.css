@@ -1,0 +1,208 @@
+:root {
+  --bg: #faf8f3;
+  --card: #ffffff;
+  --text: #1d2433;
+  --muted: #5d6677;
+  --line: #e3ded3;
+  --accent: #1f4e79;
+  --accent-soft: #e5eef7;
+  --warm: #d97706;
+  --warm-soft: #fdf3e2;
+  --ok: #1e7f4f;
+  --ok-soft: #e3f4ea;
+  --bad: #b93a2c;
+  --bad-soft: #fbe9e6;
+  --code-bg: #f3f1ec;
+  --radius: 12px;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #15181e;
+    --card: #1d2129;
+    --text: #e6e8ec;
+    --muted: #a0a7b4;
+    --line: #333946;
+    --accent: #7fb2e5;
+    --accent-soft: #1f2d3d;
+    --warm: #f0a540;
+    --warm-soft: #2e2618;
+    --ok: #5cc28d;
+    --ok-soft: #17301f;
+    --bad: #f07d6e;
+    --bad-soft: #3a1f1b;
+    --code-bg: #12151a;
+  }
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 17px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+.wrap { max-width: 780px; margin: 0 auto; padding: 0 16px 64px; }
+
+/* Шапка */
+.top {
+  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  padding: 14px 0; border-bottom: 1px solid var(--line); margin-bottom: 24px; font-size: 15px;
+}
+.top a { color: var(--accent); text-decoration: none; font-weight: 600; }
+.top .where { color: var(--muted); }
+
+h1 { font-size: 30px; line-height: 1.2; margin: 8px 0 8px; }
+h2 { font-size: 23px; margin: 40px 0 12px; line-height: 1.25; }
+h3 { font-size: 19px; margin: 24px 0 8px; }
+.lead { font-size: 19px; color: var(--muted); margin: 0 0 20px; }
+.kicker { color: var(--warm); font-weight: 700; font-size: 14px; letter-spacing: .04em; text-transform: uppercase; }
+a { color: var(--accent); }
+p, ul, ol { margin: 0 0 14px; }
+li { margin-bottom: 6px; }
+
+/* Код */
+code, pre, textarea.code {
+  font-family: Consolas, "Cascadia Mono", "Courier New", monospace;
+  font-size: 15px;
+}
+code { background: var(--code-bg); padding: 1px 5px; border-radius: 5px; }
+pre {
+  background: var(--code-bg); border: 1px solid var(--line); border-radius: 10px;
+  padding: 12px 14px; overflow-x: auto; margin: 0 0 14px; line-height: 1.5;
+}
+pre code { background: none; padding: 0; }
+
+/* Плашки */
+.box {
+  background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 16px 18px; margin: 18px 0;
+}
+.why { background: var(--warm-soft); border-color: transparent; border-left: 4px solid var(--warm); }
+.why b:first-child { color: var(--warm); }
+.remember { background: var(--accent-soft); border-color: transparent; border-left: 4px solid var(--accent); }
+.ege { border: 2px solid var(--accent); }
+.ege > .tag {
+  display: inline-block; background: var(--accent); color: var(--bg); font-weight: 700;
+  font-size: 13px; padding: 2px 10px; border-radius: 20px; margin-bottom: 8px;
+}
+
+/* Таблицы */
+.tbl { overflow-x: auto; margin: 0 0 14px; }
+table { border-collapse: collapse; font-size: 15px; }
+th, td { border: 1px solid var(--line); padding: 6px 10px; text-align: center; min-width: 38px; }
+th { background: var(--accent-soft); }
+td.x { background: var(--code-bg); }
+
+/* Кнопки */
+button {
+  font: inherit; font-size: 15px; font-weight: 600; cursor: pointer;
+  border: 0; border-radius: 9px; padding: 9px 16px;
+  background: var(--accent); color: var(--bg);
+}
+button.ghost { background: transparent; color: var(--accent); border: 1.5px solid var(--accent); }
+button:disabled { opacity: .55; cursor: default; }
+button:focus-visible, input:focus-visible, textarea:focus-visible, summary:focus-visible {
+  outline: 3px solid var(--warm); outline-offset: 2px;
+}
+
+/* Окно Python */
+.py { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); margin: 16px 0; overflow: hidden; }
+.py .task { padding: 14px 16px 4px; }
+.py textarea.code {
+  display: block; width: 100%; min-height: 110px; resize: vertical;
+  border: 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+  background: var(--code-bg); color: var(--text); padding: 12px 14px; line-height: 1.5; tab-size: 4;
+}
+.py .stdin-wrap { padding: 10px 16px 0; }
+.py .stdin-wrap label { font-size: 14px; color: var(--muted); display: block; margin-bottom: 4px; }
+.py textarea.stdin {
+  width: 100%; min-height: 44px; resize: vertical; border: 1px solid var(--line); border-radius: 8px;
+  background: var(--code-bg); color: var(--text); padding: 6px 10px; font-family: Consolas, monospace; font-size: 15px;
+}
+.py .bar { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px 16px; align-items: center; }
+.py .status { font-size: 14px; color: var(--muted); }
+.py .out {
+  margin: 0 16px 14px; white-space: pre-wrap; word-break: break-word; display: none;
+  background: var(--code-bg); border-radius: 8px; padding: 10px 12px; font-family: Consolas, monospace; font-size: 15px;
+}
+.py .out.show { display: block; }
+.py .out.err { background: var(--bad-soft); color: var(--bad); font-family: inherit; }
+.py .out.good { background: var(--ok-soft); color: var(--ok); font-family: inherit; font-weight: 600; }
+.py .out .label { font-family: inherit; font-size: 13px; color: var(--muted); display: block; margin-bottom: 4px; }
+
+/* Проверка ответа */
+.answer { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; margin: 14px 0; }
+.answer .row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+.answer input {
+  font: inherit; width: 160px; padding: 8px 10px; border-radius: 8px;
+  border: 1.5px solid var(--line); background: var(--bg); color: var(--text);
+}
+.verdict { font-weight: 600; margin-top: 8px; min-height: 1px; }
+.verdict.ok { color: var(--ok); }
+.verdict.no { color: var(--bad); }
+.solved { border-color: var(--ok); }
+
+/* Шаги */
+.steps ol { padding-left: 22px; }
+.steps li.hidden { display: none; }
+.steps li { margin-bottom: 10px; }
+
+/* Раскрывашки */
+details { border-radius: 10px; margin: 10px 0; }
+details > summary { cursor: pointer; font-weight: 600; color: var(--accent); padding: 4px 0; }
+details.hint > div { padding: 6px 0 4px 14px; border-left: 3px solid var(--line); }
+details.teacher {
+  background: var(--card); border: 1px dashed var(--muted); padding: 10px 16px; margin-top: 40px;
+}
+details.teacher > summary { color: var(--muted); }
+
+/* Копирование шаблона */
+.tpl { position: relative; }
+.tpl .copy { position: absolute; top: 8px; right: 8px; padding: 4px 10px; font-size: 13px; }
+
+/* Главная: недели */
+.month { margin-top: 28px; }
+.month h3 { color: var(--muted); font-size: 15px; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 8px; }
+.weeks { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+.weeks li { margin: 0; }
+.weeks a, .weeks .soon {
+  display: flex; gap: 14px; align-items: baseline; padding: 12px 14px; border-radius: 10px;
+  background: var(--card); border: 1px solid var(--line); text-decoration: none; color: var(--text);
+}
+.weeks a:hover { border-color: var(--accent); }
+.weeks .n { font-weight: 700; color: var(--accent); min-width: 26px; }
+.weeks .soon { opacity: .55; }
+.weeks small { color: var(--muted); display: block; font-size: 14px; }
+
+/* Карта побед */
+.map { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 8px; margin: 14px 0; }
+.map button {
+  text-align: left; background: var(--card); color: var(--text); border: 1.5px solid var(--line);
+  padding: 8px 10px; border-radius: 10px; font-weight: 400; font-size: 13px; line-height: 1.3; min-height: 64px;
+}
+.map button b { display: block; font-size: 17px; color: var(--accent); }
+.map button.learn { border-color: var(--warm); background: var(--warm-soft); }
+.map button.done { border-color: var(--ok); background: var(--ok-soft); }
+.map button.done b::after { content: " ✓"; color: var(--ok); }
+.legend { font-size: 14px; color: var(--muted); }
+.score { font-weight: 700; }
+
+/* Навигация внизу */
+.pager { display: flex; justify-content: space-between; gap: 12px; margin-top: 40px; flex-wrap: wrap; }
+.pager a {
+  padding: 10px 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--card);
+  text-decoration: none; font-weight: 600;
+}
+
+svg.graph { max-width: 100%; height: auto; display: block; margin: 6px 0 12px; }
+svg.graph line { stroke: var(--text); stroke-width: 2; }
+svg.graph circle { fill: var(--card); stroke: var(--accent); stroke-width: 2.5; }
+svg.graph text { fill: var(--text); font: 600 16px system-ui, sans-serif; text-anchor: middle; dominant-baseline: central; }
+
+@media (max-width: 520px) {
+  body { font-size: 16px; }
+  h1 { font-size: 25px; }
+  h2 { font-size: 21px; }
+  .box, .answer { padding: 14px; }
+}
