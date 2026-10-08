@@ -202,8 +202,19 @@ function setupMap(box) {
   paint();
 }
 
+// Счётчик «Решено на странице»
+function updateProgress() {
+  const el = document.querySelector('.progress');
+  if (!el) return;
+  const all = document.querySelectorAll('.answer, .py[data-tests]');
+  const done = document.querySelectorAll('.answer.solved, .py[data-tests].solved');
+  el.textContent = `${done.length} из ${all.length}`;
+}
+new MutationObserver(updateProgress).observe(document.body, { subtree: true, attributes: true, attributeFilter: ['class'] });
+
 document.querySelectorAll('.py').forEach(setupPy);
 document.querySelectorAll('.answer').forEach(setupAnswer);
 document.querySelectorAll('.steps').forEach(setupSteps);
 document.querySelectorAll('pre.tpl').forEach(setupCopy);
 document.querySelectorAll('.map').forEach(setupMap);
+updateProgress();

@@ -1,0 +1,991 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Задание 1 · Схема дорог и таблица</title>
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E🐍%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+<div class="wrap">
+
+<div class="top"><a href="index.html">← Все задания</a><span class="where">Решено на странице: <b class="progress">0</b></span></div>
+
+<div class="kicker">Задание 1 · базовый уровень · 1 балл · около 3 минут</div>
+<h1>Задание 1. Схема дорог и таблица</h1>
+<p class="lead">Самое спокойное задание экзамена. Компьютер и Python не нужны — только метод и внимательность. Освоишь метод — этот балл твой.</p>
+
+<div class="box why">
+  <b>Что нужно сделать.</b> Есть схема дорог, где пункты подписаны буквами, и таблица с длинами этих же дорог, где пункты подписаны номерами. Буквы и номера перемешаны. Нужно понять, какой номер какой букве соответствует, и ответить на вопрос.
+</div>
+
+<h2>Как задание выглядит на ЕГЭ</h2>
+<p>Условие почти всегда одно и то же (пересказ своими словами):</p>
+<div class="box">
+  <p><i>На рисунке схема дорог района, в таблице — длины этих дорог в километрах. Таблицу и схему рисовали независимо, поэтому номера пунктов в таблице никак не связаны с буквами на схеме.</i></p>
+  <p style="margin:0">Дальше идёт один из трёх вопросов:</p>
+</div>
+<ol>
+  <li><b>Длина одной дороги:</b> «Определите длину дороги из пункта В в пункт Д».</li>
+  <li><b>Сумма двух дорог:</b> «Определите сумму длин дорог из A в C и из F в D». Самый частый вариант на ЕГЭ 2023–2026 годов.</li>
+  <li><b>Номера пунктов:</b> в таблице вместо длин стоят звёздочки, нужно записать, какие номера соответствуют двум буквам: «Ответ: 35».</li>
+</ol>
+<p>Всё это — один и тот же метод. Ниже пять уровней, от самого простого к экзаменационному.</p>
+
+<h2>Слова, которые нужно знать</h2>
+<ul>
+  <li><b>Схема</b> (в учебниках — <i>граф</i>): кружки-пункты и линии-дороги.</li>
+  <li><b>Число дорог у пункта</b> (в учебниках — <i>степень вершины</i>): сколько линий выходит из кружка.</li>
+  <li><b>Таблица</b>: на пересечении строки и столбца стоит длина дороги между пунктами. Пустая клетка — дороги нет. Таблица симметрична: дорога П2–П5 записана и в строке П2, и в строке П5.</li>
+  <li><b>Число дорог у пункта в таблице</b> — сколько заполненных клеток в его строке.</li>
+</ul>
+
+<div class="box remember">
+  <b>Метод в 4 шага</b>
+  <ol style="margin:8px 0 0">
+    <li>Под каждой буквой на схеме напиши, сколько у неё дорог.</li>
+    <li>Напротив каждой строки таблицы напиши, сколько в ней чисел.</li>
+    <li>Найди «особенные» пункты: число дорог, которое встречается один раз. Их видно сразу.</li>
+    <li>От найденных пунктов иди к соседям, пока не найдёшь нужные. Потом посмотри длину в таблице.</li>
+  </ol>
+</div>
+<p><b>Главный совет:</b> решай на черновике и <b>подписывай</b> числа прямо возле букв и строк. В уме легко ошибиться.</p>
+
+<!-- ================= УРОВЕНЬ 1 ================= -->
+<h2>Уровень 1. Нужные пункты видно сразу</h2>
+<p>Самый простой случай: у нужных пунктов такое число дорог, какого больше нет ни у кого. Хватает первых трёх шагов метода.</p>
+<h3>Разбор</h3>
+<p>Найдите длину дороги из пункта <b>А</b> в пункт <b>Д</b>.</p>
+<svg class="graph" viewBox="0 0 440 200" width="440" role="img" aria-label="Схема дорог: А–Б, А–В, А–Г, А–Д, Б–В, Г–Д, Д–Е">
+<line x1="200" y1="100" x2="100" y2="30"/>
+<line x1="200" y1="100" x2="100" y2="170"/>
+<line x1="200" y1="100" x2="300" y2="30"/>
+<line x1="200" y1="100" x2="300" y2="170"/>
+<line x1="100" y1="30" x2="100" y2="170"/>
+<line x1="300" y1="30" x2="300" y2="170"/>
+<line x1="300" y1="170" x2="400" y2="170"/>
+<circle cx="200" cy="100" r="17"/><text x="200" y="100">А</text>
+<circle cx="100" cy="30" r="17"/><text x="100" y="30">Б</text>
+<circle cx="100" cy="170" r="17"/><text x="100" y="170">В</text>
+<circle cx="300" cy="30" r="17"/><text x="300" y="30">Г</text>
+<circle cx="300" cy="170" r="17"/><text x="300" y="170">Д</text>
+<circle cx="400" cy="170" r="17"/><text x="400" y="170">Е</text>
+</svg>
+<div class="tbl"><table>
+<tr><th></th><th>П1</th><th>П2</th><th>П3</th><th>П4</th><th>П5</th><th>П6</th></tr>
+<tr><th>П1</th><td class="x"></td><td></td><td>8</td><td></td><td>6</td><td></td></tr>
+<tr><th>П2</th><td></td><td class="x"></td><td>10</td><td>14</td><td></td><td>9</td></tr>
+<tr><th>П3</th><td>8</td><td>10</td><td class="x"></td><td></td><td>12</td><td>15</td></tr>
+<tr><th>П4</th><td></td><td>14</td><td></td><td class="x"></td><td></td><td></td></tr>
+<tr><th>П5</th><td>6</td><td></td><td>12</td><td></td><td class="x"></td><td></td></tr>
+<tr><th>П6</th><td></td><td>9</td><td>15</td><td></td><td></td><td class="x"></td></tr>
+</table></div>
+<div class="steps"><ol>
+  <li><b>Шаг 1. Дороги на схеме:</b> А — 4, Б — 2, В — 2, Г — 2, Д — 3, Е — 1.</li>
+  <li><b>Шаг 2. Числа в строках таблицы:</b> П1 — 2, П2 — 3, П3 — 4, П4 — 1, П5 — 2, П6 — 2.</li>
+  <li><b>Шаг 3.</b> Четыре дороги только у А и только у П3: <b>А = П3</b>. Три дороги только у Д и только у П2: <b>Д = П2</b>.</li>
+  <li><b>Ответ.</b> Дорога А–Д — это П3–П2. На пересечении строки П3 и столбца П2 стоит <b>10</b>.</li>
+</ol></div>
+<h3>Реши сам</h3>
+<div class="problem">
+<p><b>Задача 1.1.</b> Найдите длину дороги из пункта <b>Б</b> в пункт <b>Е</b>.</p>
+<svg class="graph" viewBox="0 0 420 230" width="420" role="img" aria-label="Схема дорог: Б–Д, А–Б, Б–В, В–Е, Б–Г, Д–Е, А–Г, Б–Е">
+<line x1="220" y1="40" x2="220" y2="200"/>
+<line x1="60" y1="40" x2="220" y2="40"/>
+<line x1="220" y1="40" x2="380" y2="40"/>
+<line x1="380" y1="40" x2="380" y2="200"/>
+<line x1="220" y1="40" x2="60" y2="200"/>
+<line x1="220" y1="200" x2="380" y2="200"/>
+<line x1="60" y1="40" x2="60" y2="200"/>
+<line x1="220" y1="40" x2="380" y2="200"/>
+<circle cx="60" cy="40" r="17"/><text x="60" y="40">А</text>
+<circle cx="220" cy="40" r="17"/><text x="220" y="40">Б</text>
+<circle cx="380" cy="40" r="17"/><text x="380" y="40">В</text>
+<circle cx="60" cy="200" r="17"/><text x="60" y="200">Г</text>
+<circle cx="220" cy="200" r="17"/><text x="220" y="200">Д</text>
+<circle cx="380" cy="200" r="17"/><text x="380" y="200">Е</text>
+</svg>
+<div class="tbl"><table>
+<tr><th></th><th>П1</th><th>П2</th><th>П3</th><th>П4</th><th>П5</th><th>П6</th></tr>
+<tr><th>П1</th><td class="x"></td><td>4</td><td></td><td></td><td>24</td><td></td></tr>
+<tr><th>П2</th><td>4</td><td class="x"></td><td></td><td></td><td>43</td><td></td></tr>
+<tr><th>П3</th><td></td><td></td><td class="x"></td><td>22</td><td>34</td><td>27</td></tr>
+<tr><th>П4</th><td></td><td></td><td>22</td><td class="x"></td><td>44</td><td></td></tr>
+<tr><th>П5</th><td>24</td><td>43</td><td>34</td><td>44</td><td class="x"></td><td>36</td></tr>
+<tr><th>П6</th><td></td><td></td><td>27</td><td></td><td>36</td><td class="x"></td></tr>
+</table></div>
+<div class="answer" data-answer="34"><b>Ответ:</b>
+<details class="hint"><summary>Подсказка</summary><div>Дорог у пунктов на схеме: А — 2, Б — 5, В — 2, Г — 2, Д — 2, Е — 3.<br>Чисел в строках таблицы: П1 — 2, П2 — 2, П3 — 3, П4 — 2, П5 — 5, П6 — 2.</div></details>
+<details class="hint"><summary>Решение</summary><div>Б = П5; Е = П3. Часть пунктов — «близнецы», их нельзя различить, но ответ от этого не меняется. Ответ: <b>34</b>.</div></details>
+</div>
+</div>
+<div class="problem">
+<p><b>Задача 1.2.</b> Найдите длину дороги из пункта <b>А</b> в пункт <b>Ж</b>.</p>
+<svg class="graph" viewBox="0 0 436 260" width="436" role="img" aria-label="Схема дорог: А–В, А–Д, Б–В, А–Ж, А–Г, Е–Ж, Д–Е, Ж–Б">
+<line x1="240" y1="130" x2="396" y2="80"/>
+<line x1="240" y1="130" x2="240" y2="230"/>
+<line x1="240" y1="30" x2="396" y2="80"/>
+<line x1="240" y1="130" x2="84" y2="80"/>
+<line x1="240" y1="130" x2="396" y2="180"/>
+<line x1="84" y1="180" x2="84" y2="80"/>
+<line x1="240" y1="230" x2="84" y2="180"/>
+<line x1="84" y1="80" x2="240" y2="30"/>
+<circle cx="240" cy="130" r="17"/><text x="240" y="130">А</text>
+<circle cx="240" cy="30" r="17"/><text x="240" y="30">Б</text>
+<circle cx="396" cy="80" r="17"/><text x="396" y="80">В</text>
+<circle cx="396" cy="180" r="17"/><text x="396" y="180">Г</text>
+<circle cx="240" cy="230" r="17"/><text x="240" y="230">Д</text>
+<circle cx="84" cy="180" r="17"/><text x="84" y="180">Е</text>
+<circle cx="84" cy="80" r="17"/><text x="84" y="80">Ж</text>
+</svg>
+<div class="tbl"><table>
+<tr><th></th><th>П1</th><th>П2</th><th>П3</th><th>П4</th><th>П5</th><th>П6</th><th>П7</th></tr>
+<tr><th>П1</th><td class="x"></td><td>11</td><td></td><td>19</td><td></td><td>41</td><td>28</td></tr>
+<tr><th>П2</th><td>11</td><td class="x"></td><td></td><td></td><td>42</td><td></td><td></td></tr>
+<tr><th>П3</th><td></td><td></td><td class="x"></td><td>8</td><td></td><td>16</td><td></td></tr>
+<tr><th>П4</th><td>19</td><td></td><td>8</td><td class="x"></td><td></td><td></td><td></td></tr>
+<tr><th>П5</th><td></td><td>42</td><td></td><td></td><td class="x"></td><td>10</td><td></td></tr>
+<tr><th>П6</th><td>41</td><td></td><td>16</td><td></td><td>10</td><td class="x"></td><td></td></tr>
+<tr><th>П7</th><td>28</td><td></td><td></td><td></td><td></td><td></td><td class="x"></td></tr>
+</table></div>
+<div class="answer" data-answer="41"><b>Ответ:</b>
+<details class="hint"><summary>Подсказка</summary><div>Дорог у пунктов на схеме: А — 4, Б — 2, В — 2, Г — 1, Д — 2, Е — 2, Ж — 3.<br>Чисел в строках таблицы: П1 — 4, П2 — 2, П3 — 2, П4 — 2, П5 — 2, П6 — 3, П7 — 1.</div></details>
+<details class="hint"><summary>Решение</summary><div>А = П1; Ж = П6. Часть пунктов — «близнецы», их нельзя различить, но ответ от этого не меняется. Ответ: <b>41</b>.</div></details>
+</div>
+</div>
+<div class="problem">
+<p><b>Задача 1.3.</b> Найдите длину дороги из пункта <b>А</b> в пункт <b>Б</b>.</p>
+<svg class="graph" viewBox="0 0 480 230" width="480" role="img" aria-label="Схема дорог: Б–Ж, Б–Е, А–Д, А–Б, Б–Д, Е–Ж, Г–З, Г–Ж, В–Г, Д–Е">
+<line x1="180" y1="40" x2="310" y2="200"/>
+<line x1="180" y1="40" x2="180" y2="200"/>
+<line x1="50" y1="40" x2="50" y2="200"/>
+<line x1="50" y1="40" x2="180" y2="40"/>
+<line x1="180" y1="40" x2="50" y2="200"/>
+<line x1="180" y1="200" x2="310" y2="200"/>
+<line x1="440" y1="40" x2="440" y2="200"/>
+<line x1="440" y1="40" x2="310" y2="200"/>
+<line x1="310" y1="40" x2="440" y2="40"/>
+<line x1="50" y1="200" x2="180" y2="200"/>
+<circle cx="50" cy="40" r="17"/><text x="50" y="40">А</text>
+<circle cx="180" cy="40" r="17"/><text x="180" y="40">Б</text>
+<circle cx="310" cy="40" r="17"/><text x="310" y="40">В</text>
+<circle cx="440" cy="40" r="17"/><text x="440" y="40">Г</text>
+<circle cx="50" cy="200" r="17"/><text x="50" y="200">Д</text>
+<circle cx="180" cy="200" r="17"/><text x="180" y="200">Е</text>
+<circle cx="310" cy="200" r="17"/><text x="310" y="200">Ж</text>
+<circle cx="440" cy="200" r="17"/><text x="440" y="200">З</text>
+</svg>
+<div class="tbl"><table>
+<tr><th></th><th>П1</th><th>П2</th><th>П3</th><th>П4</th><th>П5</th><th>П6</th><th>П7</th><th>П8</th></tr>
+<tr><th>П1</th><td class="x"></td><td></td><td></td><td></td><td>11</td><td></td><td></td><td></td></tr>
+<tr><th>П2</th><td></td><td class="x"></td><td></td><td></td><td>45</td><td></td><td></td><td></td></tr>
+<tr><th>П3</th><td></td><td></td><td class="x"></td><td>6</td><td>44</td><td>20</td><td></td><td></td></tr>
+<tr><th>П4</th><td></td><td></td><td>6</td><td class="x"></td><td></td><td>16</td><td></td><td>32</td></tr>
+<tr><th>П5</th><td>11</td><td>45</td><td>44</td><td></td><td class="x"></td><td></td><td></td><td></td></tr>
+<tr><th>П6</th><td></td><td></td><td>20</td><td>16</td><td></td><td class="x"></td><td>22</td><td>35</td></tr>
+<tr><th>П7</th><td></td><td></td><td></td><td></td><td></td><td>22</td><td class="x"></td><td>30</td></tr>
+<tr><th>П8</th><td></td><td></td><td></td><td>32</td><td></td><td>35</td><td>30</td><td class="x"></td></tr>
+</table></div>
+<div class="answer" data-answer="22"><b>Ответ:</b>
+<details class="hint"><summary>Подсказка</summary><div>Дорог у пунктов на схеме: А — 2, Б — 4, В — 1, Г — 3, Д — 3, Е — 3, Ж — 3, З — 1.<br>Чисел в строках таблицы: П1 — 1, П2 — 1, П3 — 3, П4 — 3, П5 — 3, П6 — 4, П7 — 2, П8 — 3.</div></details>
+<details class="hint"><summary>Решение</summary><div>А = П7; Б = П6. Часть пунктов — «близнецы», их нельзя различить, но ответ от этого не меняется. Ответ: <b>22</b>.</div></details>
+</div>
+</div>
+
+<!-- ================= УРОВЕНЬ 2 ================= -->
+<h2>Уровень 2. Идём по соседям</h2>
+<p>Теперь у нужного пункта число дорог не особенное: например, две дороги у трёх пунктов сразу. Тогда находим сначала особенные пункты, а потом смотрим, <b>с кем они соединены</b>.</p>
+<h3>Разбор</h3>
+<p>Найдите длину дороги из пункта <b>Б</b> в пункт <b>Г</b>.</p>
+<svg class="graph" viewBox="0 0 400 180" width="400" role="img" aria-label="Схема дорог: А–Б, А–В, Б–В, Б–Г, В–Д, Г–Д, Д–Е">
+<line x1="40" y1="90" x2="140" y2="30"/>
+<line x1="40" y1="90" x2="140" y2="150"/>
+<line x1="140" y1="30" x2="140" y2="150"/>
+<line x1="140" y1="30" x2="260" y2="30"/>
+<line x1="140" y1="150" x2="260" y2="150"/>
+<line x1="260" y1="30" x2="260" y2="150"/>
+<line x1="260" y1="150" x2="360" y2="150"/>
+<circle cx="40" cy="90" r="17"/><text x="40" y="90">А</text>
+<circle cx="140" cy="30" r="17"/><text x="140" y="30">Б</text>
+<circle cx="140" cy="150" r="17"/><text x="140" y="150">В</text>
+<circle cx="260" cy="30" r="17"/><text x="260" y="30">Г</text>
+<circle cx="260" cy="150" r="17"/><text x="260" y="150">Д</text>
+<circle cx="360" cy="150" r="17"/><text x="360" y="150">Е</text>
+</svg>
+<div class="tbl"><table>
+<tr><th></th><th>П1</th><th>П2</th><th>П3</th><th>П4</th><th>П5</th><th>П6</th></tr>
+<tr><th>П1</th><td class="x"></td><td>9</td><td></td><td>7</td><td></td><td></td></tr>
+<tr><th>П2</th><td>9</td><td class="x"></td><td></td><td>11</td><td>6</td><td></td></tr>
+<tr><th>П3</th><td></td><td></td><td class="x"></td><td>5</td><td>12</td><td>8</td></tr>
+<tr><th>П4</th><td>7</td><td>11</td><td>5</td><td class="x"></td><td></td><td></td></tr>
+<tr><th>П5</th><td></td><td>6</td><td>12</td><td></td><td class="x"></td><td></td></tr>
+<tr><th>П6</th><td></td><td></td><td>8</td><td></td><td></td><td class="x"></td></tr>
+</table></div>
+<div class="steps"><ol>
+  <li><b>Шаг 1. Дороги на схеме:</b> А — 2, Б — 3, В — 3, Г — 2, Д — 3, Е — 1.</li>
+  <li><b>Шаг 2. В таблице:</b> П1 — 2, П2 — 3, П3 — 3, П4 — 3, П5 — 2, П6 — 1.</li>
+  <li><b>Шаг 3. Особенный пункт.</b> Одна дорога только у Е и у П6: <b>Е = П6</b>. Е соединён с Д, а П6 — с П3: <b>Д = П3</b>.</li>
+  <li><b>Шаг 4. Соседи Д.</b> Д соединён с В, Г и Е. П3 соединён с П4, П5 и П6. У Г две дороги, у П5 тоже две: <b>Г = П5</b>. Тогда <b>В = П4</b>.</li>
+  <li><b>Остались А и Б.</b> У Б три дороги, у П2 тоже три: <b>Б = П2</b>, А = П1. Проверка: П2 соединён с П1, П4, П5, то есть с А, В, Г — на схеме так и есть.</li>
+  <li><b>Ответ.</b> Дорога Б–Г — это П2–П5: <b>6</b>.</li>
+</ol></div>
+<div class="box remember"><b>Проверяй себя.</b> Когда нашёл пункт, сверь не только число дорог, но и <b>соседей</b>. Если у пункта на схеме соседи с 3 и 1 дорогами, у его номера в таблице должны быть такие же соседи.</div>
+<h3>Реши сам</h3>
+<div class="problem">
+<p><b>Задача 2.1.</b> Найдите длину дороги из пункта <b>Г</b> в пункт <b>Д</b>.</p>
+<svg class="graph" viewBox="0 0 420 230" width="420" role="img" aria-label="Схема дорог: В–Е, Б–В, Б–Е, Б–Д, Б–Г, Г–Д, А–Г, Д–Е">
+<line x1="380" y1="40" x2="380" y2="200"/>
+<line x1="220" y1="40" x2="380" y2="40"/>
+<line x1="220" y1="40" x2="380" y2="200"/>
+<line x1="220" y1="40" x2="220" y2="200"/>
+<line x1="220" y1="40" x2="60" y2="200"/>
+<line x1="60" y1="200" x2="220" y2="200"/>
+<line x1="60" y1="40" x2="60" y2="200"/>
+<line x1="220" y1="200" x2="380" y2="200"/>
+<circle cx="60" cy="40" r="17"/><text x="60" y="40">А</text>
+<circle cx="220" cy="40" r="17"/><text x="220" y="40">Б</text>
+<circle cx="380" cy="40" r="17"/><text x="380" y="40">В</text>
+<circle cx="60" cy="200" r="17"/><text x="60" y="200">Г</text>
+<circle cx="220" cy="200" r="17"/><text x="220" y="200">Д</text>
+<circle cx="380" cy="200" r="17"/><text x="380" y="200">Е</text>
+</svg>
+<div class="tbl"><table>
+<tr><th></th><th>П1</th><th>П2</th><th>П3</th><th>П4</th><th>П5</th><th>П6</th></tr>
+<tr><th>П1</th><td class="x"></td><td>21</td><td>19</td><td>22</td><td></td><td></td></tr>
+<tr><th>П2</th><td>21</td><td class="x"></td><td></td><td>41</td><td>8</td><td></td></tr>
+<tr><th>П3</th><td>19</td><td></td><td class="x"></td><td></td><td></td><td></td></tr>
+<tr><th>П4</th><td>22</td><td>41</td><td></td><td class="x"></td><td>33</td><td>9</td></tr>
+<tr><th>П5</th><td></td><td>8</td><td></td><td>33</td><td class="x"></td><td>17</td></tr>
+<tr><th>П6</th><td></td><td></td><td></td><td>9</td><td>17</td><td class="x"></td></tr>
+</table></div>
+<div class="answer" data-answer="21"><b>Ответ:</b>
+<details class="hint"><summary>Подсказка</summary><div>Дорог у пунктов на схеме: А — 1, Б — 4, В — 2, Г — 3, Д — 3, Е — 3.<br>Чисел в строках таблицы: П1 — 3, П2 — 3, П3 — 1, П4 — 4, П5 — 3, П6 — 2.</div></details>
+<details class="hint"><summary>Решение</summary><div>Г = П1; Д = П2. Ответ: <b>21</b>.</div></details>
+</div>
+</div>
+<div class="problem">
+<p><b>Задача 2.2.</b> Найдите длину дороги из пункта <b>А</b> в пункт <b>Б</b>.</p>
+<svg class="graph" viewBox="0 0 455 250" width="455" role="img" aria-label="Схема дорог: Е–Ж, В–Г, А–Г, А–Ж, А–Д, Ж–З, А–Б, А–З, Б–В, З–Б">
+<line x1="162" y1="220" x2="65" y2="152"/>
+<line x1="381" y1="68" x2="415" y2="152"/>
+<line x1="240" y1="130" x2="415" y2="152"/>
+<line x1="240" y1="130" x2="65" y2="152"/>
+<line x1="240" y1="130" x2="318" y2="220"/>
+<line x1="65" y1="152" x2="99" y2="68"/>
+<line x1="240" y1="130" x2="240" y2="30"/>
+<line x1="240" y1="130" x2="99" y2="68"/>
+<line x1="240" y1="30" x2="381" y2="68"/>
+<line x1="99" y1="68" x2="240" y2="30"/>
+<circle cx="240" cy="130" r="17"/><text x="240" y="130">А</text>
+<circle cx="240" cy="30" r="17"/><text x="240" y="30">Б</text>
+<circle cx="381" cy="68" r="17"/><text x="381" y="68">В</text>
+<circle cx="415" cy="152" r="17"/><text x="415" y="152">Г</text>
+<circle cx="318" cy="220" r="17"/><text x="318" y="220">Д</text>
+<circle cx="162" cy="220" r="17"/><text x="162" y="220">Е</text>
+<circle cx="65" cy="152" r="17"/><text x="65" y="152">Ж</text>
+<circle cx="99" cy="68" r="17"/><text x="99" y="68">З</text>
+</svg>
+<div class="tbl"><table>
+<tr><th></th><th>П1</th><th>П2</th><th>П3</th><th>П4</th><th>П5</th><th>П6</th><th>П7</th><th>П8</th></tr>
+<tr><th>П1</th><td class="x"></td><td></td><td></td><td>24</td><td></td><td></td><td></td><td></td></tr>
+<tr><th>П2</th><td></td><td class="x"></td><td></td><td>15</td><td>8</td><td>6</td><td>16</td><td>42</td></tr>
+<tr><th>П3</th><td></td><td></td><td class="x"></td><td></td><td></td><td>14</td><td>19</td><td></td></tr>
+<tr><th>П4</th><td>24</td><td>15</td><td></td><td class="x"></td><td></td><td></td><td></td><td>27</td></tr>
+<tr><th>П5</th><td></td><td>8</td><td></td><td></td><td class="x"></td><td></td><td></td><td></td></tr>
+<tr><th>П6</th><td></td><td>6</td><td>14</td><td></td><td></td><td class="x"></td><td></td><td>10</td></tr>
+<tr><th>П7</th><td></td><td>16</td><td>19</td><td></td><td></td><td></td><td class="x"></td><td></td></tr>
+<tr><th>П8</th><td></td><td>42</td><td></td><td>27</td><td></td><td>10</td><td></td><td class="x"></td></tr>
+</table></div>
+<div class="answer" data-answer="6"><b>Ответ:</b>
+<details class="hint"><summary>Подсказка</summary><div>Дорог у пунктов на схеме: А — 5, Б — 3, В — 2, Г — 2, Д — 1, Е — 1, Ж — 3, З — 3.<br>Чисел в строках таблицы: П1 — 1, П2 — 5, П3 — 2, П4 — 3, П5 — 1, П6 — 3, П7 — 2, П8 — 3.</div></details>
+<details class="hint"><summary>Решение</summary><div>А = П2; Б = П6. Ответ: <b>6</b>.</div></details>
+</div>
+</div>
+<div class="problem">
+<p><b>Задача 2.3.</b> Найдите длину дороги из пункта <b>Г</b> в пункт <b>З</b>.</p>
+<svg class="graph" viewBox="0 0 480 230" width="480" role="img" aria-label="Схема дорог: В–Г, Б–Е, Е–Ж, Г–З, В–Ж, Б–Д, Д–Е, Б–Ж, Б–В, А–Б, Г–Ж, Ж–З">
+<line x1="310" y1="40" x2="440" y2="40"/>
+<line x1="180" y1="40" x2="180" y2="200"/>
+<line x1="180" y1="200" x2="310" y2="200"/>
+<line x1="440" y1="40" x2="440" y2="200"/>
+<line x1="310" y1="40" x2="310" y2="200"/>
+<line x1="180" y1="40" x2="50" y2="200"/>
+<line x1="50" y1="200" x2="180" y2="200"/>
+<line x1="180" y1="40" x2="310" y2="200"/>
+<line x1="180" y1="40" x2="310" y2="40"/>
+<line x1="50" y1="40" x2="180" y2="40"/>
+<line x1="440" y1="40" x2="310" y2="200"/>
+<line x1="310" y1="200" x2="440" y2="200"/>
+<circle cx="50" cy="40" r="17"/><text x="50" y="40">А</text>
+<circle cx="180" cy="40" r="17"/><text x="180" y="40">Б</text>
+<circle cx="310" cy="40" r="17"/><text x="310" y="40">В</text>
+<circle cx="440" cy="40" r="17"/><text x="440" y="40">Г</text>
+<circle cx="50" cy="200" r="17"/><text x="50" y="200">Д</text>
+<circle cx="180" cy="200" r="17"/><text x="180" y="200">Е</text>
+<circle cx="310" cy="200" r="17"/><text x="310" y="200">Ж</text>
+<circle cx="440" cy="200" r="17"/><text x="440" y="200">З</text>
+</svg>
+<div class="tbl"><table>
+<tr><th></th><th>П1</th><th>П2</th><th>П3</th><th>П4</th><th>П5</th><th>П6</th><th>П7</th><th>П8</th></tr>
+<tr><th>П1</th><td class="x"></td><td>41</td><td>45</td><td></td><td>6</td><td>14</td><td>24</td><td></td></tr>
+<tr><th>П2</th><td>41</td><td class="x"></td><td>19</td><td>21</td><td></td><td>36</td><td></td><td>3</td></tr>
+<tr><th>П3</th><td>45</td><td>19</td><td class="x"></td><td></td><td></td><td></td><td>28</td><td></td></tr>
+<tr><th>П4</th><td></td><td>21</td><td></td><td class="x"></td><td></td><td></td><td></td><td></td></tr>
+<tr><th>П5</th><td>6</td><td></td><td></td><td></td><td class="x"></td><td></td><td>34</td><td></td></tr>
+<tr><th>П6</th><td>14</td><td>36</td><td></td><td></td><td></td><td class="x"></td><td></td><td>8</td></tr>
+<tr><th>П7</th><td>24</td><td></td><td>28</td><td></td><td>34</td><td></td><td class="x"></td><td></td></tr>
+<tr><th>П8</th><td></td><td>3</td><td></td><td></td><td></td><td>8</td><td></td><td class="x"></td></tr>
+</table></div>
+<div class="answer" data-answer="34"><b>Ответ:</b>
+<details class="hint"><summary>Подсказка</summary><div>Дорог у пунктов на схеме: А — 1, Б — 5, В — 3, Г — 3, Д — 2, Е — 3, Ж — 5, З — 2.<br>Чисел в строках таблицы: П1 — 5, П2 — 5, П3 — 3, П4 — 1, П5 — 2, П6 — 3, П7 — 3, П8 — 2.</div></details>
+<details class="hint"><summary>Решение</summary><div>Г = П7; З = П5. Ответ: <b>34</b>.</div></details>
+</div>
+</div>
+
+<!-- ================= УРОВЕНЬ 3 ================= -->
+<h2>Уровень 3. Пункты-близнецы</h2>
+<p>Иногда два пункта устроены совершенно одинаково: то же число дорог, такие же соседи. Различить их невозможно — и <b>не нужно</b>. Составители ЕГЭ задают вопрос так, что ответ от этого не зависит.</p>
+<h3>Разбор</h3>
+<p>Найдите длину дороги из пункта <b>А</b> в пункт <b>В</b>.</p>
+<svg class="graph" viewBox="0 0 350 210" width="350" role="img" aria-label="Схема дорог: А–Б, А–В, А–Г, Б–В, В–Д, Г–Е, Д–Е">
+<line x1="40" y1="100" x2="140" y2="30"/>
+<line x1="40" y1="100" x2="200" y2="100"/>
+<line x1="40" y1="100" x2="140" y2="180"/>
+<line x1="140" y1="30" x2="200" y2="100"/>
+<line x1="200" y1="100" x2="310" y2="100"/>
+<line x1="140" y1="180" x2="310" y2="180"/>
+<line x1="310" y1="100" x2="310" y2="180"/>
+<circle cx="40" cy="100" r="17"/><text x="40" y="100">А</text>
+<circle cx="140" cy="30" r="17"/><text x="140" y="30">Б</text>
+<circle cx="200" cy="100" r="17"/><text x="200" y="100">В</text>
+<circle cx="140" cy="180" r="17"/><text x="140" y="180">Г</text>
+<circle cx="310" cy="100" r="17"/><text x="310" y="100">Д</text>
+<circle cx="310" cy="180" r="17"/><text x="310" y="180">Е</text>
+</svg>
+<div class="tbl"><table>
+<tr><th></th><th>П1</th><th>П2</th><th>П3</th><th>П4</th><th>П5</th><th>П6</th></tr>
+<tr><th>П1</th><td class="x"></td><td></td><td></td><td>9</td><td>4</td><td></td></tr>
+<tr><th>П2</th><td></td><td class="x"></td><td></td><td>13</td><td></td><td>19</td></tr>
+<tr><th>П3</th><td></td><td></td><td class="x"></td><td></td><td>11</td><td>3</td></tr>
+<tr><th>П4</th><td>9</td><td>13</td><td></td><td class="x"></td><td></td><td>7</td></tr>
+<tr><th>П5</th><td>4</td><td></td><td>11</td><td></td><td class="x"></td><td></td></tr>
+<tr><th>П6</th><td></td><td>19</td><td>3</td><td>7</td><td></td><td class="x"></td></tr>
+</table></div>
+<div class="steps"><ol>
+  <li><b>Шаг 1. Дороги на схеме:</b> А — 3, Б — 2, В — 3, Г — 2, Д — 2, Е — 2.</li>
+  <li><b>Шаг 2. В таблице:</b> П1 — 2, П2 — 2, П3 — 2, П4 — 3, П5 — 2, П6 — 3.</li>
+  <li><b>Шаг 3.</b> Три дороги у А и у В, в таблице — у П4 и у П6. Значит, А и В — это П4 и П6. Какой из них какой — не понять: схема «зеркальная».</li>
+  <li><b>Шаг 4. А это и не нужно.</b> Дорога между А и В — это дорога между П4 и П6, в каком бы порядке они ни стояли.</li>
+  <li><b>Ответ.</b> На пересечении П4 и П6 стоит <b>7</b>.</li>
+</ol></div>
+<div class="box remember"><b>Если не получается различить два пункта</b> — проверь, нужно ли это вообще. Часто ответ одинаковый при любом варианте.</div>
+<h3>Реши сам</h3>
+<div class="problem">
+<p><b>Задача 3.1.</b> Найдите длину дороги из пункта <b>Д</b> в пункт <b>Е</b>.</p>
+<svg class="graph" viewBox="0 0 436 260" width="436" role="img" aria-label="Схема дорог: Г–Д, А–Ж, Б–В, А–Г, Д–Е, А–В, А–Д, А–Б">
+<line x1="396" y1="180" x2="240" y2="230"/>
+<line x1="240" y1="130" x2="84" y2="80"/>
+<line x1="240" y1="30" x2="396" y2="80"/>
+<line x1="240" y1="130" x2="396" y2="180"/>
+<line x1="240" y1="230" x2="84" y2="180"/>
+<line x1="240" y1="130" x2="396" y2="80"/>
+<line x1="240" y1="130" x2="240" y2="230"/>
+<line x1="240" y1="130" x2="240" y2="30"/>
+<circle cx="240" cy="130" r="17"/><text x="240" y="130">А</text>
+<circle cx="240" cy="30" r="17"/><text x="240" y="30">Б</text>
+<circle cx="396" cy="80" r="17"/><text x="396" y="80">В</text>
+<circle cx="396" cy="180" r="17"/><text x="396" y="180">Г</text>
+<circle cx="240" cy="230" r="17"/><text x="240" y="230">Д</text>
+<circle cx="84" cy="180" r="17"/><text x="84" y="180">Е</text>
+<circle cx="84" cy="80" r="17"/><text x="84" y="80">Ж</text>
+</svg>
+<div class="tbl"><table>
+<tr><th></th><th>П1</th><th>П2</th><th>П3</th><th>П4</th><th>П5</th><th>П6</th><th>П7</th></tr>
+<tr><th>П1</th><td class="x"></td><td></td><td></td><td>4</td><td></td><td></td><td></td></tr>
+<tr><th>П2</th><td></td><td class="x"></td><td>19</td><td></td><td></td><td></td><td>14</td></tr>
+<tr><th>П3</th><td></td><td>19</td><td class="x"></td><td>26</td><td>41</td><td>44</td><td>36</td></tr>
+<tr><th>П4</th><td>4</td><td></td><td>26</td><td class="x"></td><td>10</td><td></td><td></td></tr>
+<tr><th>П5</th><td></td><td></td><td>41</td><td>10</td><td class="x"></td><td></td><td></td></tr>
+<tr><th>П6</th><td></td><td></td><td>44</td><td></td><td></td><td class="x"></td><td></td></tr>
+<tr><th>П7</th><td></td><td>14</td><td>36</td><td></td><td></td><td></td><td class="x"></td></tr>
+</table></div>
+<div class="answer" data-answer="4"><b>Ответ:</b>
+<details class="hint"><summary>Подсказка</summary><div>Дорог у пунктов на схеме: А — 5, Б — 2, В — 2, Г — 2, Д — 3, Е — 1, Ж — 1.<br>Чисел в строках таблицы: П1 — 1, П2 — 2, П3 — 5, П4 — 3, П5 — 2, П6 — 1, П7 — 2.</div></details>
+<details class="hint"><summary>Решение</summary><div>Д = П4; Е = П1. Часть пунктов — «близнецы», их нельзя различить, но ответ от этого не меняется. Ответ: <b>4</b>.</div></details>
+</div>
+</div>
+<div class="problem">
+<p><b>Задача 3.2.</b> Найдите длину дороги из пункта <b>Ж</b> в пункт <b>З</b>.</p>
+<svg class="graph" viewBox="0 0 480 230" width="480" role="img" aria-label="Схема дорог: В–Г, А–Б, Б–В, В–Е, Д–Е, А–Е, А–Д, Б–Е, В–З, В–Ж, Ж–З">
+<line x1="310" y1="40" x2="440" y2="40"/>
+<line x1="50" y1="40" x2="180" y2="40"/>
+<line x1="180" y1="40" x2="310" y2="40"/>
+<line x1="310" y1="40" x2="180" y2="200"/>
+<line x1="50" y1="200" x2="180" y2="200"/>
+<line x1="50" y1="40" x2="180" y2="200"/>
+<line x1="50" y1="40" x2="50" y2="200"/>
+<line x1="180" y1="40" x2="180" y2="200"/>
+<line x1="310" y1="40" x2="440" y2="200"/>
+<line x1="310" y1="40" x2="310" y2="200"/>
+<line x1="310" y1="200" x2="440" y2="200"/>
+<circle cx="50" cy="40" r="17"/><text x="50" y="40">А</text>
+<circle cx="180" cy="40" r="17"/><text x="180" y="40">Б</text>
+<circle cx="310" cy="40" r="17"/><text x="310" y="40">В</text>
+<circle cx="440" cy="40" r="17"/><text x="440" y="40">Г</text>
+<circle cx="50" cy="200" r="17"/><text x="50" y="200">Д</text>
+<circle cx="180" cy="200" r="17"/><text x="180" y="200">Е</text>
+<circle cx="310" cy="200" r="17"/><text x="310" y="200">Ж</text>
+<circle cx="440" cy="200" r="17"/><text x="440" y="200">З</text>
+</svg>
+<div class="tbl"><table>
+<tr><th></th><th>П1</th><th>П2</th><th>П3</th><th>П4</th><th>П5</th><th>П6</th><th>П7</th><th>П8</th></tr>
+<tr><th>П1</th><td class="x"></td><td></td><td>5</td><td></td><td>6</td><td></td><td></td><td></td></tr>
+<tr><th>П2</th><td></td><td class="x"></td><td></td><td></td><td>33</td><td></td><td></td><td></td></tr>
+<tr><th>П3</th><td>5</td><td></td><td class="x"></td><td></td><td>4</td><td></td><td></td><td></td></tr>
+<tr><th>П4</th><td></td><td></td><td></td><td class="x"></td><td>8</td><td>34</td><td>20</td><td>23</td></tr>
+<tr><th>П5</th><td>6</td><td>33</td><td>4</td><td>8</td><td class="x"></td><td>21</td><td></td><td></td></tr>
+<tr><th>П6</th><td></td><td></td><td></td><td>34</td><td>21</td><td class="x"></td><td></td><td>36</td></tr>
+<tr><th>П7</th><td></td><td></td><td></td><td>20</td><td></td><td></td><td class="x"></td><td>43</td></tr>
+<tr><th>П8</th><td></td><td></td><td></td><td>23</td><td></td><td>36</td><td>43</td><td class="x"></td></tr>
+</table></div>
+<div class="answer" data-answer="5"><b>Ответ:</b>
+<details class="hint"><summary>Подсказка</summary><div>Дорог у пунктов на схеме: А — 3, Б — 3, В — 5, Г — 1, Д — 2, Е — 4, Ж — 2, З — 2.<br>Чисел в строках таблицы: П1 — 2, П2 — 1, П3 — 2, П4 — 4, П5 — 5, П6 — 3, П7 — 2, П8 — 3.</div></details>
+<details class="hint"><summary>Решение</summary><div>Ж = П1 или П3; З = П1 или П3. Часть пунктов — «близнецы», их нельзя различить, но ответ от этого не меняется. Ответ: <b>5</b>.</div></details>
+</div>
+</div>
+<div class="problem">
+<p><b>Задача 3.3.</b> Найдите длину дороги из пункта <b>Б</b> в пункт <b>Д</b>.</p>
+<svg class="graph" viewBox="0 0 420 230" width="420" role="img" aria-label="Схема дорог: Б–В, В–Е, А–Б, Г–Д, В–Д, Б–Д, А–Г">
+<line x1="220" y1="40" x2="380" y2="40"/>
+<line x1="380" y1="40" x2="380" y2="200"/>
+<line x1="60" y1="40" x2="220" y2="40"/>
+<line x1="60" y1="200" x2="220" y2="200"/>
+<line x1="380" y1="40" x2="220" y2="200"/>
+<line x1="220" y1="40" x2="220" y2="200"/>
+<line x1="60" y1="40" x2="60" y2="200"/>
+<circle cx="60" cy="40" r="17"/><text x="60" y="40">А</text>
+<circle cx="220" cy="40" r="17"/><text x="220" y="40">Б</text>
+<circle cx="380" cy="40" r="17"/><text x="380" y="40">В</text>
+<circle cx="60" cy="200" r="17"/><text x="60" y="200">Г</text>
+<circle cx="220" cy="200" r="17"/><text x="220" y="200">Д</text>
+<circle cx="380" cy="200" r="17"/><text x="380" y="200">Е</text>
+</svg>
+<div class="tbl"><table>
+<tr><th></th><th>П1</th><th>П2</th><th>П3</th><th>П4</th><th>П5</th><th>П6</th></tr>
+<tr><th>П1</th><td class="x"></td><td></td><td></td><td>7</td><td>11</td><td></td></tr>
+<tr><th>П2</th><td></td><td class="x"></td><td></td><td></td><td></td><td>27</td></tr>
+<tr><th>П3</th><td></td><td></td><td class="x"></td><td>18</td><td>8</td><td>19</td></tr>
+<tr><th>П4</th><td>7</td><td></td><td>18</td><td class="x"></td><td></td><td></td></tr>
+<tr><th>П5</th><td>11</td><td></td><td>8</td><td></td><td class="x"></td><td>34</td></tr>
+<tr><th>П6</th><td></td><td>27</td><td>19</td><td></td><td>34</td><td class="x"></td></tr>
+</table></div>
+<div class="answer" data-answer="8"><b>Ответ:</b>
+<details class="hint"><summary>Подсказка</summary><div>Дорог у пунктов на схеме: А — 2, Б — 3, В — 3, Г — 2, Д — 3, Е — 1.<br>Чисел в строках таблицы: П1 — 2, П2 — 1, П3 — 3, П4 — 2, П5 — 3, П6 — 3.</div></details>
+<details class="hint"><summary>Решение</summary><div>Б = П3 или П5; Д = П3 или П5. Часть пунктов — «близнецы», их нельзя различить, но ответ от этого не меняется. Ответ: <b>8</b>.</div></details>
+</div>
+</div>
+
+<!-- ================= УРОВЕНЬ 4 ================= -->
+<h2>Уровень 4. Сумма двух дорог — главный формат ЕГЭ</h2>
+<p>На экзамене 2023–2026 годов чаще всего спрашивали сумму длин двух дорог. Пунктов обычно 8, буквы латинские. Метод тот же — просто ищем четыре буквы вместо двух. И <b>не обязательно находить все пункты</b>: только те, что в вопросе.</p>
+<h3>Разбор</h3>
+<p>Найдите сумму длин дорог из пункта <b>C</b> в пункт <b>H</b> и из пункта <b>D</b> в пункт <b>H</b>.</p>
+<svg class="graph" viewBox="0 0 480 230" width="480" role="img" aria-label="Схема дорог: B–F, B–C, D–H, F–G, A–B, C–H, C–F, E–F, C–G">
+<line x1="180" y1="40" x2="180" y2="200"/>
+<line x1="180" y1="40" x2="310" y2="40"/>
+<line x1="440" y1="40" x2="440" y2="200"/>
+<line x1="180" y1="200" x2="310" y2="200"/>
+<line x1="50" y1="40" x2="180" y2="40"/>
+<line x1="310" y1="40" x2="440" y2="200"/>
+<line x1="310" y1="40" x2="180" y2="200"/>
+<line x1="50" y1="200" x2="180" y2="200"/>
+<line x1="310" y1="40" x2="310" y2="200"/>
+<circle cx="50" cy="40" r="17"/><text x="50" y="40">A</text>
+<circle cx="180" cy="40" r="17"/><text x="180" y="40">B</text>
+<circle cx="310" cy="40" r="17"/><text x="310" y="40">C</text>
+<circle cx="440" cy="40" r="17"/><text x="440" y="40">D</text>
+<circle cx="50" cy="200" r="17"/><text x="50" y="200">E</text>
+<circle cx="180" cy="200" r="17"/><text x="180" y="200">F</text>
+<circle cx="310" cy="200" r="17"/><text x="310" y="200">G</text>
+<circle cx="440" cy="200" r="17"/><text x="440" y="200">H</text>
+</svg>
+<div class="tbl"><table>
+<tr><th></th><th>П1</th><th>П2</th><th>П3</th><th>П4</th><th>П5</th><th>П6</th><th>П7</th><th>П8</th></tr>
+<tr><th>П1</th><td class="x"></td><td>5</td><td>32</td><td>35</td><td>44</td><td></td><td></td><td></td></tr>
+<tr><th>П2</th><td>5</td><td class="x"></td><td>27</td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><th>П3</th><td>32</td><td>27</td><td class="x"></td><td>24</td><td></td><td></td><td></td><td>37</td></tr>
+<tr><th>П4</th><td>35</td><td></td><td>24</td><td class="x"></td><td></td><td>34</td><td></td><td></td></tr>
+<tr><th>П5</th><td>44</td><td></td><td></td><td></td><td class="x"></td><td></td><td>42</td><td></td></tr>
+<tr><th>П6</th><td></td><td></td><td></td><td>34</td><td></td><td class="x"></td><td></td><td></td></tr>
+<tr><th>П7</th><td></td><td></td><td></td><td></td><td>42</td><td></td><td class="x"></td><td></td></tr>
+<tr><th>П8</th><td></td><td></td><td>37</td><td></td><td></td><td></td><td></td><td class="x"></td></tr>
+</table></div>
+<div class="steps"><ol>
+  <li><b>Шаг 1. Дороги на схеме:</b> A — 1, B — 3, C — 4, D — 1, E — 1, F — 4, G — 2, H — 2.</li>
+  <li><b>Шаг 2. В таблице:</b> П1 — 4, П2 — 2, П3 — 4, П4 — 3, П5 — 2, П6 — 1, П7 — 1, П8 — 1.</li>
+  <li><b>Шаг 3. Что нам нужно?</b> Пункты C, D и H. Ни один из них не особенный: четыре дороги у двух пунктов, одна — у трёх, две — у двух. Значит, ищем по соседям.</li>
+  <li><b>Шаг 4. Пункт H.</b> У него 2 дороги, соседи — C (4 дороги) и D (1 дорога). В таблице 2 дороги у П2 и П5. Соседи П2 — П1 и П3, у обоих по 4 дороги: не подходит. Соседи П5 — П1 (4 дороги) и П7 (1 дорога): подходит. <b>H = П5</b>.</li>
+  <li><b>Шаг 5. Соседи H.</b> C — сосед H с 4 дорогами: <b>C = П1</b>. D — сосед H с 1 дорогой: <b>D = П7</b>.</li>
+  <li><b>Шаг 6. Считаем.</b> C–H = П1–П5 = 44. D–H = П7–П5 = 42. Сумма: 44 + 42 = <b>86</b>.</li>
+</ol></div>
+<div class="box remember"><b>Ловушка суммы:</b> найди <b>обе</b> дороги и сложи. Частая ошибка — записать в ответ только одну.</div>
+<h3>Реши сам</h3>
+<div class="problem">
+<p><b>Задача 4.1.</b> Найдите сумму длин дорог из пункта <b>C</b> в пункт <b>F</b> и из пункта <b>G</b> в пункт <b>H</b>.</p>
+<svg class="graph" viewBox="0 0 480 230" width="480" role="img" aria-label="Схема дорог: D–H, C–G, A–B, F–G, A–F, A–E, B–F, G–H, C–F, B–C">
+<line x1="440" y1="40" x2="440" y2="200"/>
+<line x1="310" y1="40" x2="310" y2="200"/>
+<line x1="50" y1="40" x2="180" y2="40"/>
+<line x1="180" y1="200" x2="310" y2="200"/>
+<line x1="50" y1="40" x2="180" y2="200"/>
+<line x1="50" y1="40" x2="50" y2="200"/>
+<line x1="180" y1="40" x2="180" y2="200"/>
+<line x1="310" y1="200" x2="440" y2="200"/>
+<line x1="310" y1="40" x2="180" y2="200"/>
+<line x1="180" y1="40" x2="310" y2="40"/>
+<circle cx="50" cy="40" r="17"/><text x="50" y="40">A</text>
+<circle cx="180" cy="40" r="17"/><text x="180" y="40">B</text>
+<circle cx="310" cy="40" r="17"/><text x="310" y="40">C</text>
+<circle cx="440" cy="40" r="17"/><text x="440" y="40">D</text>
+<circle cx="50" cy="200" r="17"/><text x="50" y="200">E</text>
+<circle cx="180" cy="200" r="17"/><text x="180" y="200">F</text>
+<circle cx="310" cy="200" r="17"/><text x="310" y="200">G</text>
+<circle cx="440" cy="200" r="17"/><text x="440" y="200">H</text>
+</svg>
+<div class="tbl"><table>
+<tr><th></th><th>П1</th><th>П2</th><th>П3</th><th>П4</th><th>П5</th><th>П6</th><th>П7</th><th>П8</th></tr>
+<tr><th>П1</th><td class="x"></td><td></td><td></td><td></td><td></td><td></td><td>41</td><td>14</td></tr>
+<tr><th>П2</th><td></td><td class="x"></td><td></td><td>35</td><td>11</td><td>20</td><td></td><td></td></tr>
+<tr><th>П3</th><td></td><td></td><td class="x"></td><td></td><td>36</td><td></td><td></td><td></td></tr>
+<tr><th>П4</th><td></td><td>35</td><td></td><td class="x"></td><td></td><td>17</td><td></td><td>42</td></tr>
+<tr><th>П5</th><td></td><td>11</td><td>36</td><td></td><td class="x"></td><td>26</td><td></td><td></td></tr>
+<tr><th>П6</th><td></td><td>20</td><td></td><td>17</td><td>26</td><td class="x"></td><td></td><td>30</td></tr>
+<tr><th>П7</th><td>41</td><td></td><td></td><td></td><td></td><td></td><td class="x"></td><td></td></tr>
+<tr><th>П8</th><td>14</td><td></td><td></td><td>42</td><td></td><td>30</td><td></td><td class="x"></td></tr>
+</table></div>
+<div class="answer" data-answer="31"><b>Ответ:</b>
+<details class="hint"><summary>Подсказка</summary><div>Дорог у пунктов на схеме: A — 3, B — 3, C — 3, D — 1, E — 1, F — 4, G — 3, H — 2.<br>Чисел в строках таблицы: П1 — 2, П2 — 3, П3 — 1, П4 — 3, П5 — 3, П6 — 4, П7 — 1, П8 — 3.</div></details>
+<details class="hint"><summary>Решение</summary><div>C = П4; F = П6; G = П8; H = П1. Дороги: 17 и 14, сумма 31. Ответ: <b>31</b>.</div></details>
+</div>
+</div>
+<div class="problem">
+<p><b>Задача 4.2.</b> Найдите сумму длин дорог из пункта <b>G</b> в пункт <b>H</b> и из пункта <b>H</b> в пункт <b>B</b>.</p>
+<svg class="graph" viewBox="0 0 455 250" width="455" role="img" aria-label="Схема дорог: E–F, A–E, A–D, C–D, G–H, H–B, B–C, A–F">
+<line x1="318" y1="220" x2="162" y2="220"/>
+<line x1="240" y1="130" x2="318" y2="220"/>
+<line x1="240" y1="130" x2="415" y2="152"/>
+<line x1="381" y1="68" x2="415" y2="152"/>
+<line x1="65" y1="152" x2="99" y2="68"/>
+<line x1="99" y1="68" x2="240" y2="30"/>
+<line x1="240" y1="30" x2="381" y2="68"/>
+<line x1="240" y1="130" x2="162" y2="220"/>
+<circle cx="240" cy="130" r="17"/><text x="240" y="130">A</text>
+<circle cx="240" cy="30" r="17"/><text x="240" y="30">B</text>
+<circle cx="381" cy="68" r="17"/><text x="381" y="68">C</text>
+<circle cx="415" cy="152" r="17"/><text x="415" y="152">D</text>
+<circle cx="318" cy="220" r="17"/><text x="318" y="220">E</text>
+<circle cx="162" cy="220" r="17"/><text x="162" y="220">F</text>
+<circle cx="65" cy="152" r="17"/><text x="65" y="152">G</text>
+<circle cx="99" cy="68" r="17"/><text x="99" y="68">H</text>
+</svg>
+<div class="tbl"><table>
+<tr><th></th><th>П1</th><th>П2</th><th>П3</th><th>П4</th><th>П5</th><th>П6</th><th>П7</th><th>П8</th></tr>
+<tr><th>П1</th><td class="x"></td><td>8</td><td></td><td>20</td><td></td><td></td><td></td><td></td></tr>
+<tr><th>П2</th><td>8</td><td class="x"></td><td>28</td><td>42</td><td></td><td></td><td></td><td></td></tr>
+<tr><th>П3</th><td></td><td>28</td><td class="x"></td><td></td><td></td><td></td><td>18</td><td></td></tr>
+<tr><th>П4</th><td>20</td><td>42</td><td></td><td class="x"></td><td></td><td></td><td></td><td></td></tr>
+<tr><th>П5</th><td></td><td></td><td></td><td></td><td class="x"></td><td>44</td><td></td><td>22</td></tr>
+<tr><th>П6</th><td></td><td></td><td></td><td></td><td>44</td><td class="x"></td><td>41</td><td></td></tr>
+<tr><th>П7</th><td></td><td></td><td>18</td><td></td><td></td><td>41</td><td class="x"></td><td></td></tr>
+<tr><th>П8</th><td></td><td></td><td></td><td></td><td>22</td><td></td><td></td><td class="x"></td></tr>
+</table></div>
+<div class="answer" data-answer="66"><b>Ответ:</b>
+<details class="hint"><summary>Подсказка</summary><div>Дорог у пунктов на схеме: A — 3, B — 2, C — 2, D — 2, E — 2, F — 2, G — 1, H — 2.<br>Чисел в строках таблицы: П1 — 2, П2 — 3, П3 — 2, П4 — 2, П5 — 2, П6 — 2, П7 — 2, П8 — 1.</div></details>
+<details class="hint"><summary>Решение</summary><div>B = П6; G = П8; H = П5. Часть пунктов — «близнецы», их нельзя различить, но ответ от этого не меняется. Дороги: 22 и 44, сумма 66. Ответ: <b>66</b>.</div></details>
+</div>
+</div>
+<div class="problem">
+<p><b>Задача 4.3.</b> Найдите сумму длин дорог из пункта <b>D</b> в пункт <b>H</b> и из пункта <b>F</b> в пункт <b>G</b>.</p>
+<svg class="graph" viewBox="0 0 480 230" width="480" role="img" aria-label="Схема дорог: C–H, C–F, E–F, C–D, F–G, B–F, G–H, C–G, A–F, D–H">
+<line x1="310" y1="40" x2="440" y2="200"/>
+<line x1="310" y1="40" x2="180" y2="200"/>
+<line x1="50" y1="200" x2="180" y2="200"/>
+<line x1="310" y1="40" x2="440" y2="40"/>
+<line x1="180" y1="200" x2="310" y2="200"/>
+<line x1="180" y1="40" x2="180" y2="200"/>
+<line x1="310" y1="200" x2="440" y2="200"/>
+<line x1="310" y1="40" x2="310" y2="200"/>
+<line x1="50" y1="40" x2="180" y2="200"/>
+<line x1="440" y1="40" x2="440" y2="200"/>
+<circle cx="50" cy="40" r="17"/><text x="50" y="40">A</text>
+<circle cx="180" cy="40" r="17"/><text x="180" y="40">B</text>
+<circle cx="310" cy="40" r="17"/><text x="310" y="40">C</text>
+<circle cx="440" cy="40" r="17"/><text x="440" y="40">D</text>
+<circle cx="50" cy="200" r="17"/><text x="50" y="200">E</text>
+<circle cx="180" cy="200" r="17"/><text x="180" y="200">F</text>
+<circle cx="310" cy="200" r="17"/><text x="310" y="200">G</text>
+<circle cx="440" cy="200" r="17"/><text x="440" y="200">H</text>
+</svg>
+<div class="tbl"><table>
+<tr><th></th><th>П1</th><th>П2</th><th>П3</th><th>П4</th><th>П5</th><th>П6</th><th>П7</th><th>П8</th></tr>
+<tr><th>П1</th><td class="x"></td><td></td><td></td><td>36</td><td></td><td></td><td></td><td></td></tr>
+<tr><th>П2</th><td></td><td class="x"></td><td></td><td>45</td><td></td><td>21</td><td>29</td><td>37</td></tr>
+<tr><th>П3</th><td></td><td></td><td class="x"></td><td>40</td><td></td><td></td><td></td><td></td></tr>
+<tr><th>П4</th><td>36</td><td>45</td><td>40</td><td class="x"></td><td>42</td><td></td><td></td><td>38</td></tr>
+<tr><th>П5</th><td></td><td></td><td></td><td>42</td><td class="x"></td><td></td><td></td><td></td></tr>
+<tr><th>П6</th><td></td><td>21</td><td></td><td></td><td></td><td class="x"></td><td>34</td><td></td></tr>
+<tr><th>П7</th><td></td><td>29</td><td></td><td></td><td></td><td>34</td><td class="x"></td><td>32</td></tr>
+<tr><th>П8</th><td></td><td>37</td><td></td><td>38</td><td></td><td></td><td>32</td><td class="x"></td></tr>
+</table></div>
+<div class="answer" data-answer="72"><b>Ответ:</b>
+<details class="hint"><summary>Подсказка</summary><div>Дорог у пунктов на схеме: A — 1, B — 1, C — 4, D — 2, E — 1, F — 5, G — 3, H — 3.<br>Чисел в строках таблицы: П1 — 1, П2 — 4, П3 — 1, П4 — 5, П5 — 1, П6 — 2, П7 — 3, П8 — 3.</div></details>
+<details class="hint"><summary>Решение</summary><div>D = П6; F = П4; G = П8; H = П7. Часть пунктов — «близнецы», их нельзя различить, но ответ от этого не меняется. Дороги: 34 и 38, сумма 72. Ответ: <b>72</b>.</div></details>
+</div>
+</div>
+<div class="problem">
+<p><b>Задача 4.4.</b> Найдите сумму длин дорог из пункта <b>G</b> в пункт <b>H</b> и из пункта <b>B</b> в пункт <b>C</b>.</p>
+<svg class="graph" viewBox="0 0 440 260" width="440" role="img" aria-label="Схема дорог: E–G, H–I, E–H, G–H, C–E, B–E, B–C, F–H, A–B, C–F, A–D, E–F">
+<line x1="230" y1="130" x2="60" y2="230"/>
+<line x1="230" y1="230" x2="400" y2="230"/>
+<line x1="230" y1="130" x2="230" y2="230"/>
+<line x1="60" y1="230" x2="230" y2="230"/>
+<line x1="400" y1="30" x2="230" y2="130"/>
+<line x1="230" y1="30" x2="230" y2="130"/>
+<line x1="230" y1="30" x2="400" y2="30"/>
+<line x1="400" y1="130" x2="230" y2="230"/>
+<line x1="60" y1="30" x2="230" y2="30"/>
+<line x1="400" y1="30" x2="400" y2="130"/>
+<line x1="60" y1="30" x2="60" y2="130"/>
+<line x1="230" y1="130" x2="400" y2="130"/>
+<circle cx="60" cy="30" r="17"/><text x="60" y="30">A</text>
+<circle cx="230" cy="30" r="17"/><text x="230" y="30">B</text>
+<circle cx="400" cy="30" r="17"/><text x="400" y="30">C</text>
+<circle cx="60" cy="130" r="17"/><text x="60" y="130">D</text>
+<circle cx="230" cy="130" r="17"/><text x="230" y="130">E</text>
+<circle cx="400" cy="130" r="17"/><text x="400" y="130">F</text>
+<circle cx="60" cy="230" r="17"/><text x="60" y="230">G</text>
+<circle cx="230" cy="230" r="17"/><text x="230" y="230">H</text>
+<circle cx="400" cy="230" r="17"/><text x="400" y="230">I</text>
+</svg>
+<div class="tbl"><table>
+<tr><th></th><th>П1</th><th>П2</th><th>П3</th><th>П4</th><th>П5</th><th>П6</th><th>П7</th><th>П8</th><th>П9</th></tr>
+<tr><th>П1</th><td class="x"></td><td>18</td><td>10</td><td></td><td></td><td></td><td></td><td>32</td><td></td></tr>
+<tr><th>П2</th><td>18</td><td class="x"></td><td></td><td>31</td><td></td><td></td><td>12</td><td>26</td><td>39</td></tr>
+<tr><th>П3</th><td>10</td><td></td><td class="x"></td><td></td><td></td><td>16</td><td></td><td></td><td></td></tr>
+<tr><th>П4</th><td></td><td>31</td><td></td><td class="x"></td><td></td><td></td><td></td><td></td><td>43</td></tr>
+<tr><th>П5</th><td></td><td></td><td></td><td></td><td class="x"></td><td></td><td></td><td></td><td>24</td></tr>
+<tr><th>П6</th><td></td><td></td><td>16</td><td></td><td></td><td class="x"></td><td></td><td></td><td></td></tr>
+<tr><th>П7</th><td></td><td>12</td><td></td><td></td><td></td><td></td><td class="x"></td><td>44</td><td>40</td></tr>
+<tr><th>П8</th><td>32</td><td>26</td><td></td><td></td><td></td><td></td><td>44</td><td class="x"></td><td></td></tr>
+<tr><th>П9</th><td></td><td>39</td><td></td><td>43</td><td>24</td><td></td><td>40</td><td></td><td class="x"></td></tr>
+</table></div>
+<div class="answer" data-answer="75"><b>Ответ:</b>
+<details class="hint"><summary>Подсказка</summary><div>Дорог у пунктов на схеме: A — 2, B — 3, C — 3, D — 1, E — 5, F — 3, G — 2, H — 4, I — 1.<br>Чисел в строках таблицы: П1 — 3, П2 — 5, П3 — 2, П4 — 2, П5 — 1, П6 — 1, П7 — 3, П8 — 3, П9 — 4.</div></details>
+<details class="hint"><summary>Решение</summary><div>B = П1; C = П8; G = П4; H = П9. Дороги: 43 и 32, сумма 75. Ответ: <b>75</b>.</div></details>
+</div>
+</div>
+
+<!-- ================= УРОВЕНЬ 5 ================= -->
+<h2>Уровень 5. Звёздочки вместо чисел</h2>
+<p>Здесь в таблице нет длин: звёздочка значит «дорога есть». Спрашивают, <b>какие номера</b> могут соответствовать двум буквам. Ответ — два номера подряд, по возрастанию, без пробелов: например, <code>35</code>.</p>
+<h3>Разбор</h3>
+<p>Какие номера в таблице могут соответствовать пунктам <b>E</b> и <b>G</b>?</p>
+<svg class="graph" viewBox="0 0 480 230" width="480" role="img" aria-label="Схема дорог: A–F, E–F, A–E, C–D, C–H, D–H, B–G, B–C, B–F, C–G, F–G, A–B">
+<line x1="50" y1="40" x2="180" y2="200"/>
+<line x1="50" y1="200" x2="180" y2="200"/>
+<line x1="50" y1="40" x2="50" y2="200"/>
+<line x1="310" y1="40" x2="440" y2="40"/>
+<line x1="310" y1="40" x2="440" y2="200"/>
+<line x1="440" y1="40" x2="440" y2="200"/>
+<line x1="180" y1="40" x2="310" y2="200"/>
+<line x1="180" y1="40" x2="310" y2="40"/>
+<line x1="180" y1="40" x2="180" y2="200"/>
+<line x1="310" y1="40" x2="310" y2="200"/>
+<line x1="180" y1="200" x2="310" y2="200"/>
+<line x1="50" y1="40" x2="180" y2="40"/>
+<circle cx="50" cy="40" r="17"/><text x="50" y="40">A</text>
+<circle cx="180" cy="40" r="17"/><text x="180" y="40">B</text>
+<circle cx="310" cy="40" r="17"/><text x="310" y="40">C</text>
+<circle cx="440" cy="40" r="17"/><text x="440" y="40">D</text>
+<circle cx="50" cy="200" r="17"/><text x="50" y="200">E</text>
+<circle cx="180" cy="200" r="17"/><text x="180" y="200">F</text>
+<circle cx="310" cy="200" r="17"/><text x="310" y="200">G</text>
+<circle cx="440" cy="200" r="17"/><text x="440" y="200">H</text>
+</svg>
+<div class="tbl"><table>
+<tr><th></th><th>П1</th><th>П2</th><th>П3</th><th>П4</th><th>П5</th><th>П6</th><th>П7</th><th>П8</th></tr>
+<tr><th>П1</th><td class="x"></td><td></td><td>*</td><td></td><td>*</td><td>*</td><td></td><td>*</td></tr>
+<tr><th>П2</th><td></td><td class="x"></td><td></td><td>*</td><td></td><td></td><td>*</td><td></td></tr>
+<tr><th>П3</th><td>*</td><td></td><td class="x"></td><td></td><td></td><td>*</td><td></td><td></td></tr>
+<tr><th>П4</th><td></td><td>*</td><td></td><td class="x"></td><td></td><td></td><td>*</td><td></td></tr>
+<tr><th>П5</th><td>*</td><td></td><td></td><td></td><td class="x"></td><td></td><td>*</td><td>*</td></tr>
+<tr><th>П6</th><td>*</td><td></td><td>*</td><td></td><td></td><td class="x"></td><td></td><td>*</td></tr>
+<tr><th>П7</th><td></td><td>*</td><td></td><td>*</td><td>*</td><td></td><td class="x"></td><td>*</td></tr>
+<tr><th>П8</th><td>*</td><td></td><td></td><td></td><td>*</td><td>*</td><td>*</td><td class="x"></td></tr>
+</table></div>
+<div class="steps"><ol>
+  <li><b>Шаг 1. Дороги на схеме:</b> A — 3, B — 4, C — 4, D — 2, E — 2, F — 4, G — 3, H — 2.</li>
+  <li><b>Шаг 2. В таблице</b> (считаем звёздочки): П1 — 4, П2 — 2, П3 — 2, П4 — 2, П5 — 3, П6 — 3, П7 — 4, П8 — 4.</li>
+  <li><b>Шаг 3. Пункт G</b> — 3 дороги, как и A. Чем они отличаются? Все три соседа G (B, C, F) имеют по 4 дороги. У A соседи F (4), B (4) и E (2). В таблице 3 дороги у П5 и П6. Соседи П5 — П1, П7, П8, у всех по 4: <b>G = П5</b>. Тогда A = П6.</li>
+  <li><b>Шаг 4. Пункт E</b> — 2 дороги, соседи A и F. Среди строк с двумя звёздочками (П2, П3, П4) только П3 соединён с П6 (это A): <b>E = П3</b>.</li>
+  <li><b>Ответ.</b> E = 3, G = 5. Записываем по возрастанию: <b>35</b>.</li>
+  <li><b>Почему «могут соответствовать»?</b> На этой схеме D и H — близнецы: какой из них П2, а какой П4, не понять. Поэтому в условии осторожное «могут». Для E и G ответ однозначный.</li>
+</ol></div>
+<div class="box remember"><b>Формат ответа:</b> номера по возрастанию, без пробелов и запятых. Если E = 5, а G = 3, всё равно пишем <code>35</code>.</div>
+<h3>Реши сам</h3>
+<div class="problem">
+<p><b>Задача 5.1.</b> Какие номера в таблице могут соответствовать пунктам <b>E</b> и <b>F</b>? Запишите два номера в порядке возрастания без пробелов.</p>
+<svg class="graph" viewBox="0 0 420 230" width="420" role="img" aria-label="Схема дорог: B–C, A–E, E–F, B–E, A–D, C–E">
+<line x1="220" y1="40" x2="380" y2="40"/>
+<line x1="60" y1="40" x2="220" y2="200"/>
+<line x1="220" y1="200" x2="380" y2="200"/>
+<line x1="220" y1="40" x2="220" y2="200"/>
+<line x1="60" y1="40" x2="60" y2="200"/>
+<line x1="380" y1="40" x2="220" y2="200"/>
+<circle cx="60" cy="40" r="17"/><text x="60" y="40">A</text>
+<circle cx="220" cy="40" r="17"/><text x="220" y="40">B</text>
+<circle cx="380" cy="40" r="17"/><text x="380" y="40">C</text>
+<circle cx="60" cy="200" r="17"/><text x="60" y="200">D</text>
+<circle cx="220" cy="200" r="17"/><text x="220" y="200">E</text>
+<circle cx="380" cy="200" r="17"/><text x="380" y="200">F</text>
+</svg>
+<div class="tbl"><table>
+<tr><th></th><th>П1</th><th>П2</th><th>П3</th><th>П4</th><th>П5</th><th>П6</th></tr>
+<tr><th>П1</th><td class="x"></td><td>*</td><td></td><td></td><td></td><td>*</td></tr>
+<tr><th>П2</th><td>*</td><td class="x"></td><td>*</td><td></td><td>*</td><td>*</td></tr>
+<tr><th>П3</th><td></td><td>*</td><td class="x"></td><td></td><td></td><td></td></tr>
+<tr><th>П4</th><td></td><td></td><td></td><td class="x"></td><td>*</td><td></td></tr>
+<tr><th>П5</th><td></td><td>*</td><td></td><td>*</td><td class="x"></td><td></td></tr>
+<tr><th>П6</th><td>*</td><td>*</td><td></td><td></td><td></td><td class="x"></td></tr>
+</table></div>
+<div class="answer" data-answer="23"><b>Ответ:</b>
+<details class="hint"><summary>Подсказка</summary><div>Дорог у пунктов на схеме: A — 2, B — 2, C — 2, D — 1, E — 4, F — 1.<br>Чисел в строках таблицы: П1 — 2, П2 — 4, П3 — 1, П4 — 1, П5 — 2, П6 — 2.</div></details>
+<details class="hint"><summary>Решение</summary><div>E = П2; F = П3. Часть пунктов — «близнецы», их нельзя различить, но ответ от этого не меняется. Ответ: <b>23</b>.</div></details>
+</div>
+</div>
+<div class="problem">
+<p><b>Задача 5.2.</b> Какие номера в таблице могут соответствовать пунктам <b>F</b> и <b>D</b>? Запишите два номера в порядке возрастания без пробелов.</p>
+<svg class="graph" viewBox="0 0 455 250" width="455" role="img" aria-label="Схема дорог: A–B, D–E, F–G, H–B, A–G, A–H, A–E, E–F, A–C, B–C">
+<line x1="240" y1="130" x2="240" y2="30"/>
+<line x1="415" y1="152" x2="318" y2="220"/>
+<line x1="162" y1="220" x2="65" y2="152"/>
+<line x1="99" y1="68" x2="240" y2="30"/>
+<line x1="240" y1="130" x2="65" y2="152"/>
+<line x1="240" y1="130" x2="99" y2="68"/>
+<line x1="240" y1="130" x2="318" y2="220"/>
+<line x1="318" y1="220" x2="162" y2="220"/>
+<line x1="240" y1="130" x2="381" y2="68"/>
+<line x1="240" y1="30" x2="381" y2="68"/>
+<circle cx="240" cy="130" r="17"/><text x="240" y="130">A</text>
+<circle cx="240" cy="30" r="17"/><text x="240" y="30">B</text>
+<circle cx="381" cy="68" r="17"/><text x="381" y="68">C</text>
+<circle cx="415" cy="152" r="17"/><text x="415" y="152">D</text>
+<circle cx="318" cy="220" r="17"/><text x="318" y="220">E</text>
+<circle cx="162" cy="220" r="17"/><text x="162" y="220">F</text>
+<circle cx="65" cy="152" r="17"/><text x="65" y="152">G</text>
+<circle cx="99" cy="68" r="17"/><text x="99" y="68">H</text>
+</svg>
+<div class="tbl"><table>
+<tr><th></th><th>П1</th><th>П2</th><th>П3</th><th>П4</th><th>П5</th><th>П6</th><th>П7</th><th>П8</th></tr>
+<tr><th>П1</th><td class="x"></td><td></td><td>*</td><td>*</td><td></td><td></td><td></td><td></td></tr>
+<tr><th>П2</th><td></td><td class="x"></td><td></td><td>*</td><td></td><td></td><td>*</td><td></td></tr>
+<tr><th>П3</th><td>*</td><td></td><td class="x"></td><td>*</td><td>*</td><td></td><td></td><td></td></tr>
+<tr><th>П4</th><td>*</td><td>*</td><td>*</td><td class="x"></td><td>*</td><td>*</td><td></td><td></td></tr>
+<tr><th>П5</th><td></td><td></td><td>*</td><td>*</td><td class="x"></td><td></td><td></td><td></td></tr>
+<tr><th>П6</th><td></td><td></td><td></td><td>*</td><td></td><td class="x"></td><td>*</td><td>*</td></tr>
+<tr><th>П7</th><td></td><td>*</td><td></td><td></td><td></td><td>*</td><td class="x"></td><td></td></tr>
+<tr><th>П8</th><td></td><td></td><td></td><td></td><td></td><td>*</td><td></td><td class="x"></td></tr>
+</table></div>
+<div class="answer" data-answer="78"><b>Ответ:</b>
+<details class="hint"><summary>Подсказка</summary><div>Дорог у пунктов на схеме: A — 5, B — 3, C — 2, D — 1, E — 3, F — 2, G — 2, H — 2.<br>Чисел в строках таблицы: П1 — 2, П2 — 2, П3 — 3, П4 — 5, П5 — 2, П6 — 3, П7 — 2, П8 — 1.</div></details>
+<details class="hint"><summary>Решение</summary><div>D = П8; F = П7. Часть пунктов — «близнецы», их нельзя различить, но ответ от этого не меняется. Ответ: <b>78</b>.</div></details>
+</div>
+</div>
+<div class="problem">
+<p><b>Задача 5.3.</b> Какие номера в таблице могут соответствовать пунктам <b>B</b> и <b>D</b>? Запишите два номера в порядке возрастания без пробелов.</p>
+<svg class="graph" viewBox="0 0 480 230" width="480" role="img" aria-label="Схема дорог: B–C, D–H, C–G, F–G, B–F, C–H, G–H, E–F, A–B, C–F, A–E, B–E">
+<line x1="180" y1="40" x2="310" y2="40"/>
+<line x1="440" y1="40" x2="440" y2="200"/>
+<line x1="310" y1="40" x2="310" y2="200"/>
+<line x1="180" y1="200" x2="310" y2="200"/>
+<line x1="180" y1="40" x2="180" y2="200"/>
+<line x1="310" y1="40" x2="440" y2="200"/>
+<line x1="310" y1="200" x2="440" y2="200"/>
+<line x1="50" y1="200" x2="180" y2="200"/>
+<line x1="50" y1="40" x2="180" y2="40"/>
+<line x1="310" y1="40" x2="180" y2="200"/>
+<line x1="50" y1="40" x2="50" y2="200"/>
+<line x1="180" y1="40" x2="50" y2="200"/>
+<circle cx="50" cy="40" r="17"/><text x="50" y="40">A</text>
+<circle cx="180" cy="40" r="17"/><text x="180" y="40">B</text>
+<circle cx="310" cy="40" r="17"/><text x="310" y="40">C</text>
+<circle cx="440" cy="40" r="17"/><text x="440" y="40">D</text>
+<circle cx="50" cy="200" r="17"/><text x="50" y="200">E</text>
+<circle cx="180" cy="200" r="17"/><text x="180" y="200">F</text>
+<circle cx="310" cy="200" r="17"/><text x="310" y="200">G</text>
+<circle cx="440" cy="200" r="17"/><text x="440" y="200">H</text>
+</svg>
+<div class="tbl"><table>
+<tr><th></th><th>П1</th><th>П2</th><th>П3</th><th>П4</th><th>П5</th><th>П6</th><th>П7</th><th>П8</th></tr>
+<tr><th>П1</th><td class="x"></td><td></td><td></td><td>*</td><td>*</td><td>*</td><td></td><td>*</td></tr>
+<tr><th>П2</th><td></td><td class="x"></td><td></td><td>*</td><td>*</td><td></td><td>*</td><td></td></tr>
+<tr><th>П3</th><td></td><td></td><td class="x"></td><td></td><td></td><td>*</td><td></td><td></td></tr>
+<tr><th>П4</th><td>*</td><td>*</td><td></td><td class="x"></td><td>*</td><td></td><td>*</td><td></td></tr>
+<tr><th>П5</th><td>*</td><td>*</td><td></td><td>*</td><td class="x"></td><td></td><td></td><td>*</td></tr>
+<tr><th>П6</th><td>*</td><td></td><td>*</td><td></td><td></td><td class="x"></td><td></td><td>*</td></tr>
+<tr><th>П7</th><td></td><td>*</td><td></td><td>*</td><td></td><td></td><td class="x"></td><td></td></tr>
+<tr><th>П8</th><td>*</td><td></td><td></td><td></td><td>*</td><td>*</td><td></td><td class="x"></td></tr>
+</table></div>
+<div class="answer" data-answer="34"><b>Ответ:</b>
+<details class="hint"><summary>Подсказка</summary><div>Дорог у пунктов на схеме: A — 2, B — 4, C — 4, D — 1, E — 3, F — 4, G — 3, H — 3.<br>Чисел в строках таблицы: П1 — 4, П2 — 3, П3 — 1, П4 — 4, П5 — 4, П6 — 3, П7 — 2, П8 — 3.</div></details>
+<details class="hint"><summary>Решение</summary><div>B = П4; D = П3. Ответ: <b>34</b>.</div></details>
+</div>
+</div>
+
+<!-- ================= КАК НА ЕГЭ ================= -->
+<h2>Как на ЕГЭ: финальная проверка</h2>
+<p>Три задачи экзаменационной сложности: 8–9 пунктов, у многих одинаковое число дорог. Засеки время — на экзамене на одну задачу около 3 минут. Решишь все три без подсказок — смело отмечай задание 1 на <a href="index.html">карте побед</a> как «умею».</p>
+<div class="problem">
+<p><b>Задача Е.1.</b> Найдите сумму длин дорог из пункта <b>A</b> в пункт <b>B</b> и из пункта <b>C</b> в пункт <b>D</b>.</p>
+<svg class="graph" viewBox="0 0 480 230" width="480" role="img" aria-label="Схема дорог: C–D, B–F, C–F, G–H, D–H, F–G, D–G, A–B, B–C, E–F, A–F">
+<line x1="310" y1="40" x2="440" y2="40"/>
+<line x1="180" y1="40" x2="180" y2="200"/>
+<line x1="310" y1="40" x2="180" y2="200"/>
+<line x1="310" y1="200" x2="440" y2="200"/>
+<line x1="440" y1="40" x2="440" y2="200"/>
+<line x1="180" y1="200" x2="310" y2="200"/>
+<line x1="440" y1="40" x2="310" y2="200"/>
+<line x1="50" y1="40" x2="180" y2="40"/>
+<line x1="180" y1="40" x2="310" y2="40"/>
+<line x1="50" y1="200" x2="180" y2="200"/>
+<line x1="50" y1="40" x2="180" y2="200"/>
+<circle cx="50" cy="40" r="17"/><text x="50" y="40">A</text>
+<circle cx="180" cy="40" r="17"/><text x="180" y="40">B</text>
+<circle cx="310" cy="40" r="17"/><text x="310" y="40">C</text>
+<circle cx="440" cy="40" r="17"/><text x="440" y="40">D</text>
+<circle cx="50" cy="200" r="17"/><text x="50" y="200">E</text>
+<circle cx="180" cy="200" r="17"/><text x="180" y="200">F</text>
+<circle cx="310" cy="200" r="17"/><text x="310" y="200">G</text>
+<circle cx="440" cy="200" r="17"/><text x="440" y="200">H</text>
+</svg>
+<div class="tbl"><table>
+<tr><th></th><th>П1</th><th>П2</th><th>П3</th><th>П4</th><th>П5</th><th>П6</th><th>П7</th><th>П8</th></tr>
+<tr><th>П1</th><td class="x"></td><td></td><td></td><td>28</td><td></td><td></td><td>4</td><td>6</td></tr>
+<tr><th>П2</th><td></td><td class="x"></td><td></td><td></td><td></td><td></td><td></td><td>16</td></tr>
+<tr><th>П3</th><td></td><td></td><td class="x"></td><td></td><td>12</td><td>7</td><td></td><td></td></tr>
+<tr><th>П4</th><td>28</td><td></td><td></td><td class="x"></td><td></td><td></td><td></td><td>39</td></tr>
+<tr><th>П5</th><td></td><td></td><td>12</td><td></td><td class="x"></td><td>9</td><td>11</td><td></td></tr>
+<tr><th>П6</th><td></td><td></td><td>7</td><td></td><td>9</td><td class="x"></td><td></td><td>37</td></tr>
+<tr><th>П7</th><td>4</td><td></td><td></td><td></td><td>11</td><td></td><td class="x"></td><td>20</td></tr>
+<tr><th>П8</th><td>6</td><td>16</td><td></td><td>39</td><td></td><td>37</td><td>20</td><td class="x"></td></tr>
+</table></div>
+<div class="answer" data-answer="39"><b>Ответ:</b>
+<details class="hint"><summary>Подсказка</summary><div>Дорог у пунктов на схеме: A — 2, B — 3, C — 3, D — 3, E — 1, F — 5, G — 3, H — 2.<br>Чисел в строках таблицы: П1 — 3, П2 — 1, П3 — 2, П4 — 2, П5 — 3, П6 — 3, П7 — 3, П8 — 5.</div></details>
+<details class="hint"><summary>Решение</summary><div>A = П4; B = П1; C = П7; D = П5. Дороги: 28 и 11, сумма 39. Ответ: <b>39</b>.</div></details>
+</div>
+</div>
+<div class="problem">
+<p><b>Задача Е.2.</b> Найдите сумму длин дорог из пункта <b>C</b> в пункт <b>F</b> и из пункта <b>D</b> в пункт <b>H</b>.</p>
+<svg class="graph" viewBox="0 0 440 260" width="440" role="img" aria-label="Схема дорог: B–F, D–G, D–H, D–E, B–E, E–I, A–D, C–F, E–H, E–F, B–C, F–I, A–B">
+<line x1="230" y1="30" x2="400" y2="130"/>
+<line x1="60" y1="130" x2="60" y2="230"/>
+<line x1="60" y1="130" x2="230" y2="230"/>
+<line x1="60" y1="130" x2="230" y2="130"/>
+<line x1="230" y1="30" x2="230" y2="130"/>
+<line x1="230" y1="130" x2="400" y2="230"/>
+<line x1="60" y1="30" x2="60" y2="130"/>
+<line x1="400" y1="30" x2="400" y2="130"/>
+<line x1="230" y1="130" x2="230" y2="230"/>
+<line x1="230" y1="130" x2="400" y2="130"/>
+<line x1="230" y1="30" x2="400" y2="30"/>
+<line x1="400" y1="130" x2="400" y2="230"/>
+<line x1="60" y1="30" x2="230" y2="30"/>
+<circle cx="60" cy="30" r="17"/><text x="60" y="30">A</text>
+<circle cx="230" cy="30" r="17"/><text x="230" y="30">B</text>
+<circle cx="400" cy="30" r="17"/><text x="400" y="30">C</text>
+<circle cx="60" cy="130" r="17"/><text x="60" y="130">D</text>
+<circle cx="230" cy="130" r="17"/><text x="230" y="130">E</text>
+<circle cx="400" cy="130" r="17"/><text x="400" y="130">F</text>
+<circle cx="60" cy="230" r="17"/><text x="60" y="230">G</text>
+<circle cx="230" cy="230" r="17"/><text x="230" y="230">H</text>
+<circle cx="400" cy="230" r="17"/><text x="400" y="230">I</text>
+</svg>
+<div class="tbl"><table>
+<tr><th></th><th>П1</th><th>П2</th><th>П3</th><th>П4</th><th>П5</th><th>П6</th><th>П7</th><th>П8</th><th>П9</th></tr>
+<tr><th>П1</th><td class="x"></td><td></td><td></td><td></td><td></td><td></td><td>31</td><td></td><td>16</td></tr>
+<tr><th>П2</th><td></td><td class="x"></td><td></td><td></td><td>38</td><td>40</td><td></td><td></td><td></td></tr>
+<tr><th>П3</th><td></td><td></td><td class="x"></td><td></td><td>41</td><td></td><td></td><td></td><td>27</td></tr>
+<tr><th>П4</th><td></td><td></td><td></td><td class="x"></td><td></td><td>5</td><td>10</td><td></td><td></td></tr>
+<tr><th>П5</th><td></td><td>38</td><td>41</td><td></td><td class="x"></td><td>32</td><td>18</td><td></td><td>24</td></tr>
+<tr><th>П6</th><td></td><td>40</td><td></td><td>5</td><td>32</td><td class="x"></td><td>7</td><td></td><td></td></tr>
+<tr><th>П7</th><td>31</td><td></td><td></td><td>10</td><td>18</td><td>7</td><td class="x"></td><td></td><td></td></tr>
+<tr><th>П8</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="x"></td><td>30</td></tr>
+<tr><th>П9</th><td>16</td><td></td><td>27</td><td></td><td>24</td><td></td><td></td><td>30</td><td class="x"></td></tr>
+</table></div>
+<div class="answer" data-answer="32"><b>Ответ:</b>
+<details class="hint"><summary>Подсказка</summary><div>Дорог у пунктов на схеме: A — 2, B — 4, C — 2, D — 4, E — 5, F — 4, G — 1, H — 2, I — 2.<br>Чисел в строках таблицы: П1 — 2, П2 — 2, П3 — 2, П4 — 2, П5 — 5, П6 — 4, П7 — 4, П8 — 1, П9 — 4.</div></details>
+<details class="hint"><summary>Решение</summary><div>C = П4; D = П9; F = П6; H = П3. Дороги: 5 и 27, сумма 32. Ответ: <b>32</b>.</div></details>
+</div>
+</div>
+<div class="problem">
+<p><b>Задача Е.3.</b> Какие номера в таблице могут соответствовать пунктам <b>B</b> и <b>E</b>? Запишите два номера в порядке возрастания без пробелов.</p>
+<svg class="graph" viewBox="0 0 480 230" width="480" role="img" aria-label="Схема дорог: E–F, B–C, G–H, B–G, B–E, C–G, C–D, A–E">
+<line x1="50" y1="200" x2="180" y2="200"/>
+<line x1="180" y1="40" x2="310" y2="40"/>
+<line x1="310" y1="200" x2="440" y2="200"/>
+<line x1="180" y1="40" x2="310" y2="200"/>
+<line x1="180" y1="40" x2="50" y2="200"/>
+<line x1="310" y1="40" x2="310" y2="200"/>
+<line x1="310" y1="40" x2="440" y2="40"/>
+<line x1="50" y1="40" x2="50" y2="200"/>
+<circle cx="50" cy="40" r="17"/><text x="50" y="40">A</text>
+<circle cx="180" cy="40" r="17"/><text x="180" y="40">B</text>
+<circle cx="310" cy="40" r="17"/><text x="310" y="40">C</text>
+<circle cx="440" cy="40" r="17"/><text x="440" y="40">D</text>
+<circle cx="50" cy="200" r="17"/><text x="50" y="200">E</text>
+<circle cx="180" cy="200" r="17"/><text x="180" y="200">F</text>
+<circle cx="310" cy="200" r="17"/><text x="310" y="200">G</text>
+<circle cx="440" cy="200" r="17"/><text x="440" y="200">H</text>
+</svg>
+<div class="tbl"><table>
+<tr><th></th><th>П1</th><th>П2</th><th>П3</th><th>П4</th><th>П5</th><th>П6</th><th>П7</th><th>П8</th></tr>
+<tr><th>П1</th><td class="x"></td><td></td><td></td><td></td><td></td><td></td><td></td><td>*</td></tr>
+<tr><th>П2</th><td></td><td class="x"></td><td></td><td></td><td></td><td></td><td>*</td><td></td></tr>
+<tr><th>П3</th><td></td><td></td><td class="x"></td><td></td><td>*</td><td></td><td></td><td></td></tr>
+<tr><th>П4</th><td></td><td></td><td></td><td class="x"></td><td>*</td><td></td><td></td><td></td></tr>
+<tr><th>П5</th><td></td><td></td><td>*</td><td>*</td><td class="x"></td><td>*</td><td></td><td></td></tr>
+<tr><th>П6</th><td></td><td></td><td></td><td></td><td>*</td><td class="x"></td><td>*</td><td>*</td></tr>
+<tr><th>П7</th><td></td><td>*</td><td></td><td></td><td></td><td>*</td><td class="x"></td><td>*</td></tr>
+<tr><th>П8</th><td>*</td><td></td><td></td><td></td><td></td><td>*</td><td>*</td><td class="x"></td></tr>
+</table></div>
+<div class="answer" data-answer="56"><b>Ответ:</b>
+<details class="hint"><summary>Подсказка</summary><div>Дорог у пунктов на схеме: A — 1, B — 3, C — 3, D — 1, E — 3, F — 1, G — 3, H — 1.<br>Чисел в строках таблицы: П1 — 1, П2 — 1, П3 — 1, П4 — 1, П5 — 3, П6 — 3, П7 — 3, П8 — 3.</div></details>
+<details class="hint"><summary>Решение</summary><div>B = П6; E = П5. Часть пунктов — «близнецы», их нельзя различить, но ответ от этого не меняется. Ответ: <b>56</b>.</div></details>
+</div>
+</div>
+
+<h2>Ловушки</h2>
+<ul>
+  <li><b>Перепутал строку.</b> Длину дороги П2–П5 ищи на пересечении строки П2 и столбца П5. Проверь: в строке П5 и столбце П2 должно стоять то же число.</li>
+  <li><b>Не проверил соседей.</b> Число дорог совпало — это ещё не доказательство. Сверь соседей.</li>
+  <li><b>В сумме одна дорога.</b> Спросили сумму — сложи обе.</li>
+  <li><b>Номера не по возрастанию</b> в задаче со звёздочками.</li>
+  <li><b>Решал в уме.</b> Подписывай числа на черновике: так не запутаешься.</li>
+</ul>
+
+<details class="teacher">
+  <summary>Для учителя</summary>
+  <p><b>Сколько времени:</b> одно-два занятия. Первое: слова, метод, уровни 1–3. Второе: уровни 4–5 и «Как на ЕГЭ».</p>
+  <p><b>Как объяснять:</b> начните с доски. Нарисуйте схему из 5 пунктов, составьте к ней таблицу, перемешайте номера — и пусть класс восстанавливает. После этого суть задания понятна всем.</p>
+  <p><b>Игра на урок:</b> ученики в парах рисуют свою схему, делают к ней таблицу с перемешанными номерами и меняются. Кто быстрее найдёт соответствие.</p>
+  <p><b>Где ошибаются:</b> не проверяют соседей; путают строку и столбец; в сумме пишут одну дорогу; в задаче со звёздочками пишут номера не по возрастанию.</p>
+  <p><b>Про задачи на странице:</b> все задачи составлены для курса и проверены программой: перебраны все возможные соответствия пунктов и номеров, ответ у каждой задачи единственный. У каждой есть подсказка (число дорог) и краткое решение.</p>
+  <p><b>Для сильных учеников:</b> задание можно решить и программой — перебрать все перестановки букв (модуль <code>itertools.permutations</code>). Но на экзамене вручную быстрее, и это надёжнее.</p>
+</details>
+
+<div class="pager"><a href="index.html">← Все задания</a><span></span></div>
+</div>
+<script src="course.js"></script>
+</body>
+</html>
